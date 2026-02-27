@@ -602,9 +602,136 @@ const Parametres = ({ settings, setSettings }) => {
 };
 
 // ─── APP ROOT ─────────────────────────────────────────────────────────────────
+
+// ─── FACTURIER ────────────────────────────────────────────────────────────────
+const Facturier = ({ prestations, factures, setFactures }) => {
+
+  // Init facture entry for a prestation if it doesn't exist yet
+  const getFacture = (id) => factures[id] || { facture:"", acompte:"", total:"Attente", commentaire:"" };
+
+  const upd = (id, field, value) => {
+    setFactures(prev => ({ ...prev, [id]: { ...getFacture(id), [field]: value } }));
+  };
+
+  const totalRegle   = prestations.filter(p => getFacture(p.id).total === "Réglé").reduce((a,p) => a+p.tarif, 0);
+  const totalAttente = prestations.filter(p => getFacture(p.id).total === "Attente").reduce((a,p) => a+p.tarif, 0);
+  const totalLitige  = prestations.filter(p => getFacture(p.id).total === "Litige").reduce((a,p) => a+p.tarif, 0);
+
+  if (prestations.length === 0) return (
+    <div className="anim">
+      <PageTitle sub="Suivi de facturation de vos prestations">Facturier</PageTitle>
+      <Card>
+        <Empty icon="🧾" title="Aucune prestation à facturer"
+          sub="Ajoutez des prestations dans l'onglet Prestations pour les retrouver ici." />
+      </Card>
+    </div>
+  );
+
+  return (
+    <div className="anim">
+      <PageTitle sub={`${prestations.length} prestation${prestations.length>1?"s":""} · Suivi de facturation`}>Facturier</PageTitle>
+
+      {/* KPIs */}
+      <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit, minmax(180px,1fr))", gap:16, marginBottom:28 }}>
+        <KPI label="Réglé"   value={`${totalRegle.toLocaleString("fr-FR",{minimumFractionDigits:2})} €`}   color={C.green}  icon="✅" />
+        <KPI label="Attente" value={`${totalAttente.toLocaleString("fr-FR",{minimumFractionDigits:2})} €`} color={C.yellow} icon="⏳" />
+        <KPI label="Litige"  value={`${totalLitige.toLocaleString("fr-FR",{minimumFractionDigits:2})} €`}  color={C.red}    icon="⚠️" />
+        <KPI label="Total"   value={`${prestations.reduce((a,p)=>a+p.tarif,0).toLocaleString("fr-FR",{minimumFractionDigits:2})} €`} color={C.coral} icon="💰" />
+      </div>
+
+      <Card noPad>
+        <div style={{ overflowX:"auto" }}>
+          <table style={{ minWidth:1000 }}>
+            <thead>
+              <tr>
+                {/* Read-only cols */}
+                <th>Date</th>
+                <th>Client</th>
+                <th>Tarif</th>
+                {/* Editable cols */}
+                <th style={{ color:C.coral }}>N° Facture</th>
+                <th style={{ color:C.coral }}>Acompte</th>
+                <th style={{ color:C.coral }}>Total</th>
+                <th style={{ color:C.coral }}>Commentaire</th>
+              </tr>
+            </thead>
+            <tbody>
+              {[...prestations].sort((a,b) => new Date(b.date)-new Date(a.date)).map(p => {
+                const f = getFacture(p.id);
+                const statusColors = {
+                  "Réglé":   { badge:"badge-green",  dot:C.green },
+                  "Attente": { badge:"badge-yellow", dot:C.yellow },
+                  "Litige":  { badge:"badge-red",    dot:C.red },
+                };
+                return (
+                  <tr key={p.id}>
+                    {/* Read-only */}
+                    <td style={{ color:C.muted, fontSize:13, whiteSpace:"nowrap" }}>{p.date}</td>
+                    <td style={{ fontWeight:500, color:C.muted }}>{p.nom}</td>
+                    <td style={{ fontWeight:700, color:C.muted, whiteSpace:"nowrap" }}>{p.tarif.toLocaleString("fr-FR")} €</td>
+
+                    {/* N° Facture */}
+                    <td style={{ minWidth:140 }}>
+                      <input
+                        value={f.facture}
+                        onChange={e => upd(p.id, "facture", e.target.value)}
+                        placeholder="F-2026-001"
+                        style={{ fontSize:13, padding:"7px 10px", borderRadius:8 }}
+                      />
+                    </td>
+
+                    {/* Acompte */}
+                    <td style={{ minWidth:130 }}>
+                      <input
+                        value={f.acompte}
+                        onChange={e => upd(p.id, "acompte", e.target.value)}
+                        placeholder="Ex: 150 €"
+                        style={{ fontSize:13, padding:"7px 10px", borderRadius:8 }}
+                      />
+                    </td>
+
+                    {/* Total / Statut */}
+                    <td style={{ minWidth:120 }}>
+                      <select
+                        value={f.total}
+                        onChange={e => upd(p.id, "total", e.target.value)}
+                        style={{ fontSize:13, padding:"7px 10px", borderRadius:8,
+                          background: f.total==="Réglé" ? C.greenPale : f.total==="Litige" ? C.redPale : C.yellowPale,
+                          color:      f.total==="Réglé" ? C.sageDark  : f.total==="Litige" ? C.red      : C.yellow,
+                          border:`1.5px solid ${f.total==="Réglé" ? C.green : f.total==="Litige" ? C.red : C.yellow}`,
+                          fontWeight:600,
+                        }}
+                      >
+                        <option value="Attente">Attente</option>
+                        <option value="Réglé">Réglé</option>
+                        <option value="Litige">Litige</option>
+                      </select>
+                    </td>
+
+                    {/* Commentaire */}
+                    <td style={{ minWidth:180 }}>
+                      <input
+                        value={f.commentaire}
+                        onChange={e => upd(p.id, "commentaire", e.target.value)}
+                        placeholder="Notes…"
+                        style={{ fontSize:13, padding:"7px 10px", borderRadius:8 }}
+                      />
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </Card>
+    </div>
+  );
+};
+
 const NAVS = [
   { id:"dashboard",   label:"Tableau de bord", icon:"◈" },
   { id:"prestations", label:"Prestations",     icon:"◉" },
+  { id:"facturier",   label:"Facturier",      icon:"◇" },
   { id:"params",      label:"Paramètres",      icon:"◌" },
 ];
 
@@ -689,6 +816,7 @@ export default function App() {
   const [view, setView]                   = useState("dashboard");
   const [settings, setSettings]           = useState(defaultSettings);
   const [prestations, setPrestations]     = useState([]);
+  const [factures, setFactures]           = useState({});
   const [triggerNew, setTriggerNew]       = useState(false);
   const [dataModal, setDataModal]         = useState(false);
   const [savedFlash, setSavedFlash]       = useState(false);
@@ -700,7 +828,7 @@ export default function App() {
 
   // ── Export ──
   const handleSave = () => {
-    const data = JSON.stringify({ version:1, exportedAt: new Date().toISOString(), settings, prestations }, null, 2);
+    const data = JSON.stringify({ version:1, exportedAt: new Date().toISOString(), settings, prestations, factures }, null, 2);
     const blob = new Blob([data], { type:"application/json" });
     const url  = URL.createObjectURL(blob);
     const a    = document.createElement("a");
@@ -714,9 +842,10 @@ export default function App() {
   };
 
   // ── Import ──
-  const handleLoad = ({ prestations: p, settings: s }) => {
+  const handleLoad = ({ prestations: p, settings: s, factures: f }) => {
     setPrestations(p || []);
     setSettings(s || defaultSettings);
+    setFactures(f || {});
   };
 
   return (
@@ -805,6 +934,7 @@ export default function App() {
         <main style={{ flex:1, padding:"44px 52px", overflowY:"auto" }}>
           {view==="dashboard"   && <Dashboard   prestations={prestations} settings={settings} onNewPrestation={goNewPrestation} />}
           {view==="prestations" && <Prestations prestations={prestations} setPrestations={setPrestations} settings={settings} triggerNew={triggerNew} setTriggerNew={setTriggerNew} />}
+          {view==="facturier"   && <Facturier   prestations={prestations} factures={factures} setFactures={setFactures} />}
           {view==="params"      && <Parametres  settings={settings} setSettings={setSettings} />}
         </main>
       </div>
