@@ -155,7 +155,7 @@ const Hr = ({ label }) => (
 const Modal = ({ open, onClose, title, subtitle, children }) => {
   if (!open) return null;
   return (
-    <div style={{ position:"fixed", inset:0, zIndex:500, display:"flex", alignItems:"center", justifyContent:"center", padding:20 }}>
+    <div style={{ position:"fixed", inset:0, zIndex:500, display:"flex", alignItems:"flex-start", justifyContent:"center", padding:20, overflowY:"auto" }}>
       <div onClick={onClose} style={{ position:"absolute", inset:0, background:"rgba(42,33,24,.42)", backdropFilter:"blur(6px)" }} />
       <div className="anim" style={{ position:"relative", background:C.white, borderRadius:24, padding:"36px 40px", width:"100%", maxWidth:540, maxHeight:"92vh", overflowY:"auto", boxShadow:"0 24px 80px rgba(0,0,0,.18)" }}>
         <button onClick={onClose} style={{ position:"absolute", top:18, right:18, background:C.sand, border:"none", borderRadius:99, width:32, height:32, fontSize:18, color:C.muted, display:"flex", alignItems:"center", justifyContent:"center" }}>×</button>
