@@ -33,16 +33,16 @@ const MONTHS = ["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Aoû
 // ─── DEFAULT SETTINGS ─────────────────────────────────────────────────────────
 const defaultSettings = {
   nomActivite:     "Mon activité",
-  metier:          "Photographe",
+  metier:          "Freelance",
   objectifMensuel: 2500,
   tauxCharges:     22.1,
   typesPrestation: [
-    { nom: "Shooting famille",    tarif: 400 },
-    { nom: "Shooting maternité",  tarif: 450 },
-    { nom: "Shooting portrait",   tarif: 350 },
-    { nom: "Mariage journée",     tarif: 2000 },
-    { nom: "Mariage 1/2 journée", tarif: 1000 },
-    { nom: "Autre",               tarif: 0 },
+    { nom: "Prestation 1/2 journée", tarif: 400 },
+    { nom: "Prestation journée",     tarif: 750 },
+    { nom: "Prestation sur mesure",  tarif: 500 },
+    { nom: "Forfait mensuel",        tarif: 1000 },
+    { nom: "Consultation / Conseil", tarif: 150 },
+    { nom: "Autre",                  tarif: 0 },
   ],
   regions: [
     "Île-de-France","Auvergne-Rhône-Alpes","Pays de la Loire","Bretagne",
