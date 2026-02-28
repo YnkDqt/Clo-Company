@@ -45,6 +45,15 @@ const G = `
   html, body { height: 100%; }
   body { background: ${C.bg}; font-family: 'DM Sans', sans-serif; color: ${C.text}; font-size: 14px; line-height: 1.5; }
   ::-webkit-scrollbar { width: 5px; height: 5px; }
+  @media (max-width: 768px) {
+    .mob-hidden { display: none !important; }
+    .mob-show { display: flex !important; }
+    .mob-topbar { display: flex !important; }
+    .sidebar-mobile { position: fixed; top: 0; left: 0; height: 100vh; z-index: 400; transform: translateX(-100%); transition: transform .28s cubic-bezier(.4,0,.2,1); }
+    .sidebar-mobile.open { transform: translateX(0); box-shadow: 4px 0 32px rgba(0,0,0,.14); }
+    .mob-overlay { display: block !important; }
+    .main-pad { padding: 20px 18px 40px !important; padding-top: 72px !important; }
+  }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: ${C.sandDark}; border-radius: 99px; }
   @keyframes fadeUp { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:translateY(0); } }
@@ -158,7 +167,7 @@ const ProgressBar = ({ label, value, objectif, sub }) => {
 const Modal = ({ open, onClose, title, subtitle, children }) => {
   if (!open) return null;
   return (
-    <div style={{ position:"fixed", inset:0, zIndex:500, display:"flex", alignItems:"center", justifyContent:"center", padding:"20px", paddingTop:"8vh" }}>
+    <div style={{ position:"fixed", inset:0, zIndex:500, display:"flex", alignItems:"flex-start", justifyContent:"center", padding:"24px 20px", overflowY:"auto" }}>
       <div onClick={onClose} style={{ position:"absolute", inset:0, background:"rgba(42,33,24,.42)", backdropFilter:"blur(6px)" }} />
       <div className="anim" style={{ position:"relative", background:C.white, borderRadius:24, padding:"44px 52px", width:"100%", maxWidth:820, maxHeight:"90vh", overflowY:"auto", boxShadow:"0 24px 80px rgba(0,0,0,.18)" }}>
         <button onClick={onClose} style={{ position:"absolute", top:18, right:18, background:C.sand, border:"none", borderRadius:99, width:32, height:32, fontSize:18, color:C.muted, display:"flex", alignItems:"center", justifyContent:"center" }}>×</button>
@@ -261,41 +270,6 @@ const Onboarding = ({ onClose, onGoParams }) => (
 );
 
 
-// ─── FRANCE REGION MAP ────────────────────────────────────────────────────────
-// Simplified SVG paths for the 13 metropolitan regions + Corse
-// ViewBox "0 0 545 605"
-const REGION_PATHS = {
-  "Hauts-de-France":             "M 208,42 L 380,42 L 392,142 L 308,158 L 224,146 Z",
-  "Normandie":                   "M 52,80 L 138,44 L 208,42 L 224,146 L 178,172 L 110,182 L 55,158 Z",
-  "Bretagne":                    "M 5,152 L 55,80 L 110,182 L 116,250 L 68,280 L 5,244 Z",
-  "Pays de la Loire":            "M 110,182 L 178,172 L 224,146 L 260,178 L 246,270 L 162,296 L 100,266 L 68,244 L 116,250 Z",
-  "Centre-Val de Loire":         "M 224,146 L 308,158 L 342,184 L 326,264 L 260,272 L 246,240 L 260,178 Z",
-  "Île-de-France":               "M 308,158 L 356,152 L 360,182 L 342,184 L 308,180 Z",
-  "Grand Est":                   "M 380,42 L 464,66 L 482,196 L 432,210 L 390,174 L 356,152 L 392,142 Z",
-  "Bourgogne-Franche-Comté":    "M 342,184 L 432,210 L 442,270 L 406,308 L 340,304 L 314,260 L 340,216 L 326,197 Z",
-  "Nouvelle-Aquitaine":          "M 68,280 L 162,296 L 260,272 L 286,298 L 274,392 L 210,438 L 110,428 L 44,364 Z",
-  "Occitanie":                   "M 110,428 L 210,438 L 274,392 L 340,304 L 406,308 L 452,372 L 416,470 L 290,504 L 148,494 Z",
-  "Auvergne-Rhône-Alpes":       "M 260,272 L 314,260 L 340,304 L 406,308 L 442,270 L 486,296 L 480,386 L 452,372 L 406,308 L 274,392 L 286,298 Z",
-  "Provence-Alpes-Côte d'Azur": "M 406,308 L 486,386 L 502,450 L 452,482 L 416,456 L 416,470 L 452,372 Z",
-  "Corse":                       "M 484,426 L 506,400 L 528,452 L 518,500 L 490,494 Z",
-};
-
-const REGION_CENTROIDS = {
-  "Hauts-de-France":             [296, 100],
-  "Normandie":                   [145, 125],
-  "Bretagne":                    [58,  185],
-  "Pays de la Loire":            [165, 228],
-  "Centre-Val de Loire":         [289, 216],
-  "Île-de-France":               [332, 168],
-  "Grand Est":                   [424, 138],
-  "Bourgogne-Franche-Comté":    [385, 248],
-  "Nouvelle-Aquitaine":          [168, 356],
-  "Occitanie":                   [282, 440],
-  "Auvergne-Rhône-Alpes":       [372, 334],
-  "Provence-Alpes-Côte d'Azur": [452, 400],
-  "Corse":                       [507, 452],
-};
-
 const RegionBlocks = ({ prestations }) => {
   const [hovered, setHovered] = useState(null);
 
@@ -328,68 +302,7 @@ const RegionBlocks = ({ prestations }) => {
   if (!hasRegions) return null;
 
   return (
-    <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:20, marginTop:20 }}>
-
-      {/* ── Carte de France ── */}
-      <Card style={{ padding:"22px 24px" }}>
-        <h3 style={{ fontFamily:"'Cormorant Garamond', serif", fontSize:19, fontWeight:600, marginBottom:4 }}>Origine géographique</h3>
-        <p style={{ fontSize:12, color:C.muted, marginBottom:16 }}>Plus la région est foncée, plus elle est représentée</p>
-
-        <div style={{ position:"relative" }}>
-          <svg viewBox="0 0 545 605" style={{ width:"100%", height:"auto" }}>
-            {Object.entries(REGION_PATHS).map(([region, path]) => {
-              const count = byRegion[region] || 0;
-              const isHov = hovered === region;
-              return (
-                <g key={region}>
-                  <path
-                    d={path}
-                    fill={regionColor(region)}
-                    stroke={C.white}
-                    strokeWidth={isHov ? 2.5 : 1.5}
-                    style={{ cursor:"pointer", filter:isHov?"drop-shadow(0 2px 6px rgba(0,0,0,.18))":"none", transition:"all .15s" }}
-                    onMouseEnter={()=>setHovered(region)}
-                    onMouseLeave={()=>setHovered(null)}
-                  />
-                  {count > 0 && (
-                    <text
-                      x={REGION_CENTROIDS[region]?.[0] || 0}
-                      y={(REGION_CENTROIDS[region]?.[1] || 0) + 4}
-                      textAnchor="middle"
-                      fontSize={count>9?"11":"10"}
-                      fontWeight="700"
-                      fill={count/maxCount > 0.5 ? C.white : C.coralDeep}
-                      style={{ pointerEvents:"none", fontFamily:"'DM Sans', sans-serif" }}
-                    >
-                      {count}
-                    </text>
-                  )}
-                </g>
-              );
-            })}
-          </svg>
-
-          {/* Tooltip on hover */}
-          {hovered && (
-            <div style={{ position:"absolute", bottom:10, left:"50%", transform:"translateX(-50%)", background:C.white, border:`1.5px solid ${C.border}`, borderRadius:10, padding:"8px 16px", fontSize:13, boxShadow:"0 4px 16px rgba(0,0,0,.1)", whiteSpace:"nowrap", pointerEvents:"none", textAlign:"center" }}>
-              <div style={{ fontWeight:600 }}>{hovered}</div>
-              <div style={{ color:C.muted, fontSize:12 }}>
-                {byRegion[hovered] || 0} prestation{(byRegion[hovered]||0)>1?"s":""}
-                {byRegion[hovered] ? ` · ${Math.round((byRegion[hovered]/total)*100)}%` : ""}
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* Légende dégradé */}
-        <div style={{ display:"flex", alignItems:"center", gap:8, marginTop:8 }}>
-          <span style={{ fontSize:11, color:C.muted }}>0</span>
-          <div style={{ flex:1, height:8, borderRadius:99, background:`linear-gradient(to right, ${C.sand}, ${C.coral})` }} />
-          <span style={{ fontSize:11, color:C.muted }}>{maxCount}</span>
-        </div>
-      </Card>
-
-      {/* ── Classement des régions ── */}
+    <div style={{ marginTop:20 }}>
       <Card style={{ padding:"22px 24px" }}>
         <h3 style={{ fontFamily:"'Cormorant Garamond', serif", fontSize:19, fontWeight:600, marginBottom:4 }}>Classement par région</h3>
         <p style={{ fontSize:12, color:C.muted, marginBottom:18 }}>{Object.keys(byRegion).length} région{Object.keys(byRegion).length>1?"s":" représentée"} · {total} prestation{total>1?"s":""}</p>
@@ -841,6 +754,9 @@ const Frais = ({ frais, setFrais }) => {
   const [filterCat, setFilterCat] = useState("");
   const [form, setForm]           = useState(defaultFraisEntry());
   const [confirmId, setConfirmId] = useState(null);
+  const [bulkModal, setBulkModal] = useState(false);
+  const [bulkForm, setBulkForm]   = useState({ categorie:"", libelle:"", montant:"", paiement:"Prélèvement", commentaire:"", jour:"1" });
+  const [bulkMois, setBulkMois]   = useState(new Set(MONTHS));
 
   const upd = (k,v) => setForm(prev => { const next={...prev,[k]:v}; if(k==="date"&&v){const d=new Date(v);if(!isNaN(d))next.mois=MONTHS[d.getMonth()];}; return next; });
   const openNew  = () => { setEditId(null); setForm(defaultFraisEntry()); setModal(true); };
@@ -852,6 +768,21 @@ const Frais = ({ frais, setFrais }) => {
     setModal(false);
   };
   const doDelete = () => { setFrais(prev=>prev.filter(f=>f.id!==confirmId)); setConfirmId(null); };
+
+  const saveBulk = () => {
+    if (!bulkForm.libelle || !bulkForm.montant) return;
+    const yr = new Date().getFullYear();
+    const jour = Math.max(1, Math.min(28, parseInt(bulkForm.jour)||1));
+    const entries = [...bulkMois].map(m => {
+      const mIdx = MONTHS.indexOf(m);
+      const dateStr = `${yr}-${String(mIdx+1).padStart(2,"0")}-${String(jour).padStart(2,"0")}`;
+      return { ...bulkForm, id:Date.now()+mIdx+Math.random(), date:dateStr, mois:m, montant:parseFloat(bulkForm.montant)||0 };
+    });
+    setFrais(prev => [...prev, ...entries]);
+    setBulkModal(false);
+    setBulkForm({ categorie:"", libelle:"", montant:"", paiement:"Prélèvement", commentaire:"", jour:"1" });
+    setBulkMois(new Set(MONTHS));
+  };
 
   const displayed = frais.filter(f=>{
     if (filterMois&&f.mois!==filterMois) return false;
@@ -881,6 +812,7 @@ const Frais = ({ frais, setFrais }) => {
         <PageTitle sub={`${frais.length} dépense${frais.length>1?"s":""} · Total annuel : ${totalAnnuel.toLocaleString("fr-FR",{minimumFractionDigits:2})} €`}>Mes frais</PageTitle>
         <div style={{ display:"flex", gap:10 }}>
           {frais.length>0 && <Btn variant="sage" onClick={handleCSV}>⬇ CSV</Btn>}
+          <Btn variant="soft" onClick={()=>setBulkModal(true)}>↺ Récurrents</Btn>
           <Btn onClick={openNew}>＋ Ajouter un frais</Btn>
         </div>
       </div>
@@ -983,6 +915,73 @@ const Frais = ({ frais, setFrais }) => {
       </Modal>
 
       <ConfirmDialog open={!!confirmId} message="Ce frais sera supprimé définitivement. Cette action est irréversible." onConfirm={doDelete} onCancel={()=>setConfirmId(null)} />
+
+      {/* ── Bulk / récurrents modal ── */}
+      <Modal open={bulkModal} onClose={()=>setBulkModal(false)} title="Frais récurrents" subtitle="Créez plusieurs entrées d'un coup — idéal pour les abonnements mensuels">
+        <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:16, marginBottom:24 }}>
+          <Field label="Type de frais">
+            <select value={bulkForm.categorie} onChange={e=>setBulkForm(p=>({...p,categorie:e.target.value,libelle:""}))}>
+              <option value="" disabled>Sélectionner…</option>
+              {CATEGORIES_FRAIS.map(c=><option key={c.label}>{c.label}</option>)}
+            </select>
+          </Field>
+          <Field label="Libellé" style={{ opacity:bulkForm.categorie?1:0.5 }}>
+            <select value={bulkForm.libelle} onChange={e=>setBulkForm(p=>({...p,libelle:e.target.value}))} disabled={!bulkForm.categorie}>
+              <option value="" disabled>{bulkForm.categorie?"Sélectionner…":"Choisir un type d'abord"}</option>
+              {bulkForm.categorie && CATEGORIES_FRAIS.find(c=>c.label===bulkForm.categorie)?.items.map(i=><option key={i}>{i}</option>)}
+            </select>
+          </Field>
+          <Field label="Montant mensuel (€)">
+            <input type="number" min={0} step={0.01} value={bulkForm.montant} onChange={e=>setBulkForm(p=>({...p,montant:e.target.value}))} placeholder="0" />
+          </Field>
+          <Field label="Mode de paiement">
+            <select value={bulkForm.paiement} onChange={e=>setBulkForm(p=>({...p,paiement:e.target.value}))}>
+              {["Prélèvement","Virement","Chèque","Espèces","Carte bancaire","Autre"].map(x=><option key={x}>{x}</option>)}
+            </select>
+          </Field>
+          <Field label="Jour du mois">
+            <input type="number" min={1} max={28} value={bulkForm.jour} onChange={e=>setBulkForm(p=>({...p,jour:e.target.value}))} placeholder="1" />
+          </Field>
+          <Field label="Commentaire">
+            <input value={bulkForm.commentaire} onChange={e=>setBulkForm(p=>({...p,commentaire:e.target.value}))} placeholder="Ex: Netflix, Adobe…" />
+          </Field>
+        </div>
+
+        {/* Month picker */}
+        <div style={{ marginBottom:20 }}>
+          <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:10 }}>
+            <label style={{ fontSize:11, fontWeight:600, color:C.muted, textTransform:"uppercase", letterSpacing:".07em" }}>Mois à créer</label>
+            <div style={{ display:"flex", gap:8 }}>
+              <button onClick={()=>setBulkMois(new Set(MONTHS))} style={{ fontSize:12, color:C.coral, background:"none", border:"none", cursor:"pointer", fontFamily:"'DM Sans',sans-serif" }}>Tout sélectionner</button>
+              <button onClick={()=>setBulkMois(new Set())} style={{ fontSize:12, color:C.muted, background:"none", border:"none", cursor:"pointer", fontFamily:"'DM Sans',sans-serif" }}>Effacer</button>
+            </div>
+          </div>
+          <div style={{ display:"grid", gridTemplateColumns:"repeat(6,1fr)", gap:8 }}>
+            {MONTHS.map(m => {
+              const on = bulkMois.has(m);
+              return (
+                <button key={m} onClick={()=>setBulkMois(prev=>{ const s=new Set(prev); on?s.delete(m):s.add(m); return s; })}
+                  style={{ padding:"8px 4px", borderRadius:10, border:`1.5px solid ${on?C.coral:C.border}`, background:on?C.coralPale:"transparent", color:on?C.coralDeep:C.muted, fontSize:12, fontFamily:"'DM Sans',sans-serif", fontWeight:on?600:400, cursor:"pointer" }}>
+                  {m.slice(0,3)}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {bulkMois.size > 0 && bulkForm.montant && (
+          <div style={{ background:C.sand, borderRadius:12, padding:"12px 16px", marginBottom:20, fontSize:13, color:C.muted }}>
+            Cela créera <strong style={{ color:C.coral }}>{bulkMois.size} entrée{bulkMois.size>1?"s":""}</strong> de <strong>{parseFloat(bulkForm.montant||0).toLocaleString("fr-FR")} € chacune</strong> — total : <strong>{(bulkMois.size*(parseFloat(bulkForm.montant||0))).toLocaleString("fr-FR")} €</strong>
+          </div>
+        )}
+
+        <div style={{ display:"flex", justifyContent:"flex-end", gap:10 }}>
+          <Btn variant="ghost" onClick={()=>setBulkModal(false)}>Annuler</Btn>
+          <Btn onClick={saveBulk} style={{ opacity:(!bulkForm.libelle||!bulkForm.montant||bulkMois.size===0)?0.5:1 }}>
+            Créer {bulkMois.size} entrée{bulkMois.size>1?"s":""}
+          </Btn>
+        </div>
+      </Modal>
     </div>
   );
 };
@@ -1216,6 +1215,7 @@ const NAVS = [
 // ─── APP ROOT ─────────────────────────────────────────────────────────────────
 export default function App() {
   const [view, setView]               = useState("dashboard");
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [settings, setSettings]       = useState(defaultSettings);
   const [prestations, setPrestations] = useState([]);
   const [factures, setFactures]       = useState({});
@@ -1277,10 +1277,24 @@ export default function App() {
       {showOnboarding && prestations.length===0 && (
         <Onboarding onClose={()=>setShowOnboarding(false)} onGoParams={()=>setView("params")} />
       )}
+      {/* ── Mobile top bar ── */}
+      <div className="mob-topbar" style={{ display:"none", position:"fixed", top:0, left:0, right:0, zIndex:300, background:C.white, borderBottom:`1px solid ${C.border}`, padding:"0 16px", height:52, alignItems:"center", justifyContent:"space-between" }}>
+        <div style={{ fontFamily:"'Cormorant Garamond', serif", fontSize:32, fontWeight:600, color:C.coral, lineHeight:1 }}>Clo'</div>
+        <button onClick={()=>setSidebarOpen(true)} style={{ background:"none", border:"none", cursor:"pointer", padding:8, display:"flex", flexDirection:"column", gap:5 }}>
+          <div style={{ width:22, height:2, background:C.text, borderRadius:2 }} />
+          <div style={{ width:22, height:2, background:C.text, borderRadius:2 }} />
+          <div style={{ width:16, height:2, background:C.text, borderRadius:2 }} />
+        </button>
+      </div>
+
+      {/* ── Mobile overlay ── */}
+      <div className="mob-overlay" onClick={()=>setSidebarOpen(false)} style={{ display:"none", position:"fixed", inset:0, background:"rgba(42,33,24,.35)", zIndex:390, backdropFilter:"blur(2px)" }} />
+
       <div style={{ display:"flex", minHeight:"100vh" }}>
 
         {/* ── Sidebar ── */}
-        <aside style={{ width:224, background:C.white, borderRight:`1px solid ${C.border}`, display:"flex", flexDirection:"column", position:"sticky", top:0, height:"100vh", flexShrink:0 }}>
+        <aside className={`sidebar-mobile${sidebarOpen?" open":""}`} style={{ width:224, background:C.white, borderRight:`1px solid ${C.border}`, display:"flex", flexDirection:"column", position:"sticky", top:0, height:"100vh", flexShrink:0 }}>
+          <button className="mob-show" onClick={()=>setSidebarOpen(false)} style={{ display:"none", position:"absolute", top:12, right:12, background:C.sand, border:"none", borderRadius:99, width:28, height:28, fontSize:16, color:C.muted, alignItems:"center", justifyContent:"center", cursor:"pointer", zIndex:10 }}>×</button>
           {/* Brand */}
           <div style={{ padding:"28px 24px 20px", borderBottom:`1px solid ${C.border}` }}>
             <div style={{ fontFamily:"'Cormorant Garamond', serif", fontSize:42, fontWeight:600, color:C.coral, lineHeight:1, letterSpacing:"-0.03em" }}>Clo'</div>
@@ -1350,7 +1364,7 @@ export default function App() {
             {NAVS.map(n => {
               const active = view===n.id;
               return (
-                <button key={n.id} onClick={()=>setView(n.id)} style={{ display:"flex", alignItems:"center", gap:10, padding:"10px 14px", borderRadius:12, border:"none", width:"100%", textAlign:"left", background:active?C.coralPale:"transparent", color:active?C.coralDeep:C.muted, fontFamily:"'DM Sans', sans-serif", fontWeight:active?600:400, fontSize:14 }}>
+                <button key={n.id} onClick={()=>{setView(n.id);setSidebarOpen(false);}} style={{ display:"flex", alignItems:"center", gap:10, padding:"10px 14px", borderRadius:12, border:"none", width:"100%", textAlign:"left", background:active?C.coralPale:"transparent", color:active?C.coralDeep:C.muted, fontFamily:"'DM Sans', sans-serif", fontWeight:active?600:400, fontSize:14 }}>
                   <span style={{ fontSize:14 }}>{n.icon}</span>{n.label}
                 </button>
               );
@@ -1392,7 +1406,7 @@ export default function App() {
         </aside>
 
         {/* ── Main ── */}
-        <main style={{ flex:1, padding:"44px 52px", overflowY:"auto", minHeight:"100vh" }}>
+        <main className="main-pad" style={{ flex:1, padding:"44px 52px", overflowY:"auto", minHeight:"100vh" }}>
           {view==="dashboard"   && <Dashboard   prestations={prestations} frais={frais} settings={settings} onNewPrestation={goNewPrestation} year={year} />}
           {view==="prestations" && <Prestations prestations={prestations} setPrestations={setPrestations} settings={settings} triggerNew={triggerNew} setTriggerNew={setTriggerNew} />}
           {view==="facturier"   && <Facturier   prestations={prestations} factures={factures} setFactures={setFactures} />}
