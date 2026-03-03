@@ -44,6 +44,25 @@ const G = `
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { height: 100%; }
   body { background: ${C.bg}; font-family: 'DM Sans', sans-serif; color: ${C.text}; font-size: 14px; line-height: 1.5; }
+
+  /* ── CSS Custom Properties (light defaults) ── */
+  :root {
+    --surface: ${C.white};
+    --surface-2: ${C.sand};
+    --surface-3: ${C.sandDark};
+    --border-c: ${C.border};
+    --text-c: ${C.text};
+    --muted-c: ${C.muted};
+  }
+  :root.dark {
+    --surface: linear-gradient(145deg, #2E2118 0%, #1E1510 100%);
+    --surface-2: #2A1E18;
+    --surface-3: #35251D;
+    --border-c: #3E2E24;
+    --text-c: #F2EAE0;
+    --muted-c: #9A8B82;
+  }
+
   ::-webkit-scrollbar { width: 5px; height: 5px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: ${C.sandDark}; border-radius: 99px; }
@@ -51,13 +70,13 @@ const G = `
   .anim { animation: fadeUp 0.3s ease both; }
   input, select, textarea {
     font-family: 'DM Sans', sans-serif; font-size: 14px;
-    border: 1.5px solid ${C.border}; border-radius: 12px;
-    padding: 10px 14px; background: ${C.white}; color: ${C.text};
+    border: 1.5px solid var(--border-c); border-radius: 12px;
+    padding: 10px 14px; background: var(--surface); color: var(--text-c);
     width: 100%; outline: none; transition: border-color .2s, box-shadow .2s;
     appearance: none; -webkit-appearance: none;
   }
   input:focus, select:focus, textarea:focus { border-color: ${C.coral}; box-shadow: 0 0 0 3px ${C.coralPale}; }
-  input::placeholder, textarea::placeholder { color: ${C.muted}; opacity: 0.7; }
+  input::placeholder, textarea::placeholder { color: var(--muted-c); opacity: 0.7; }
   select {
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='none' stroke='%239A8C84' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' d='M1 1l4 4 4-4'/%3E%3C/svg%3E");
     background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px;
@@ -65,15 +84,16 @@ const G = `
   button { font-family: 'DM Sans', sans-serif; cursor: pointer; transition: all .18s; }
   table { border-collapse: collapse; width: 100%; }
   thead th {
-    font-size: 11px; font-weight: 600; color: ${C.muted};
+    font-size: 11px; font-weight: 600; color: var(--muted-c);
     text-transform: uppercase; letter-spacing: .07em;
     padding: 12px 18px; text-align: left;
-    background: ${C.sand}; border-bottom: 1px solid ${C.border}; white-space: nowrap;
+    background: var(--surface-2); border-bottom: 1px solid var(--border-c); white-space: nowrap;
   }
-  tbody td { padding: 14px 18px; border-bottom: 1px solid ${C.border}; vertical-align: middle; }
+  tbody td { padding: 14px 18px; border-bottom: 1px solid var(--border-c); vertical-align: middle; color: var(--text-c); }
   tbody tr:last-child td { border-bottom: none; }
   tbody tr { transition: background .12s; }
   tbody tr:hover td { background: ${C.coralPale}; }
+  :root.dark tbody tr:hover td { background: rgba(217,113,90,.18); }
   .badge { display:inline-flex; align-items:center; gap:4px; padding:3px 10px; border-radius:99px; font-size:12px; font-weight:500; white-space:nowrap; }
   .badge-green  { background:${C.greenPale};  color:${C.sageDark}; }
   .badge-yellow { background:${C.yellowPale}; color:${C.yellow}; }
@@ -97,41 +117,41 @@ const Btn = ({ onClick, children, variant="primary", size="md", style:s={} }) =>
 };
 
 const Card = ({ children, style={}, noPad }) => (
-  <div style={{ background:C.white, borderRadius:20, border:`1px solid ${C.border}`, padding:noPad?0:28, overflow:noPad?"hidden":undefined, ...style }}>
+  <div style={{ background:"var(--surface)", borderRadius:20, border:"1px solid var(--border-c)", padding:noPad?0:28, overflow:noPad?"hidden":undefined, ...style }}>
     {children}
   </div>
 );
 
 const KPI = ({ label, value, sub, color=C.coral, icon }) => (
-  <div style={{ background:C.white, borderRadius:18, border:`1px solid ${C.border}`, padding:"22px 26px" }}>
+  <div style={{ background:"var(--surface)", borderRadius:18, border:"1px solid var(--border-c)", padding:"22px 26px" }}>
     <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:10 }}>
-      <span style={{ fontSize:11, fontWeight:600, color:C.muted, textTransform:"uppercase", letterSpacing:".07em", lineHeight:1.4 }}>{label}</span>
+      <span style={{ fontSize:11, fontWeight:600, color:"var(--muted-c)", textTransform:"uppercase", letterSpacing:".07em", lineHeight:1.4 }}>{label}</span>
       {icon && <span style={{ fontSize:18, opacity:.75 }}>{icon}</span>}
     </div>
     <div style={{ fontFamily:"'Cormorant Garamond', serif", fontSize:32, fontWeight:600, color, lineHeight:1 }}>{value}</div>
-    {sub && <div style={{ fontSize:12, color:C.muted, marginTop:6 }}>{sub}</div>}
+    {sub && <div style={{ fontSize:12, color:"var(--muted-c)", marginTop:6 }}>{sub}</div>}
   </div>
 );
 
 const PageTitle = ({ children, sub }) => (
   <div style={{ marginBottom:32 }}>
-    <h1 style={{ fontFamily:"'Cormorant Garamond', serif", fontSize:34, fontWeight:600, color:C.text, letterSpacing:"-0.02em", lineHeight:1 }}>{children}</h1>
-    {sub && <p style={{ fontSize:14, color:C.muted, marginTop:7 }}>{sub}</p>}
+    <h1 style={{ fontFamily:"'Cormorant Garamond', serif", fontSize:34, fontWeight:600, color:"var(--text-c)", letterSpacing:"-0.02em", lineHeight:1 }}>{children}</h1>
+    {sub && <p style={{ fontSize:14, color:"var(--muted-c)", marginTop:7 }}>{sub}</p>}
   </div>
 );
 
 const Field = ({ label, children, full, style:s={} }) => (
   <div style={{ gridColumn:full?"1 / -1":undefined, ...s }}>
-    <label style={{ display:"block", fontSize:11, fontWeight:600, color:C.muted, textTransform:"uppercase", letterSpacing:".07em", marginBottom:6 }}>{label}</label>
+    <label style={{ display:"block", fontSize:11, fontWeight:600, color:"var(--muted-c)", textTransform:"uppercase", letterSpacing:".07em", marginBottom:6 }}>{label}</label>
     {children}
   </div>
 );
 
 const Hr = ({ label }) => (
   <div style={{ gridColumn:"1 / -1", display:"flex", alignItems:"center", gap:10, margin:"4px 0" }}>
-    <div style={{ flex:1, height:1, background:C.border }} />
-    {label && <span style={{ fontSize:11, color:C.muted, fontWeight:600, textTransform:"uppercase", letterSpacing:".07em", flexShrink:0 }}>{label}</span>}
-    <div style={{ flex:1, height:1, background:C.border }} />
+    <div style={{ flex:1, height:1, background:"var(--border-c)" }} />
+    {label && <span style={{ fontSize:11, color:"var(--muted-c)", fontWeight:600, textTransform:"uppercase", letterSpacing:".07em", flexShrink:0 }}>{label}</span>}
+    <div style={{ flex:1, height:1, background:"var(--border-c)" }} />
   </div>
 );
 
@@ -147,7 +167,7 @@ const ProgressBar = ({ label, value, objectif, sub }) => {
         </div>
         <span style={{ fontFamily:"'Cormorant Garamond', serif", fontSize:24, fontWeight:600, color }}>{pct}%</span>
       </div>
-      <div style={{ background:C.sand, borderRadius:99, height:8, overflow:"hidden" }}>
+      <div style={{ background:"var(--surface-2)", borderRadius:99, height:8, overflow:"hidden" }}>
         <div style={{ height:"100%", borderRadius:99, background:color, width:`${pct}%`, transition:"width 1.2s cubic-bezier(.4,0,.2,1)" }} />
       </div>
       {sub && <div style={{ fontSize:12, color:C.muted, marginTop:10 }}>{sub}</div>}
@@ -160,11 +180,11 @@ const Modal = ({ open, onClose, title, subtitle, children }) => {
   return (
     <div style={{ position:"fixed", inset:0, zIndex:500, display:"flex", alignItems:"center", justifyContent:"center", padding:"20px", paddingTop:"8vh" }}>
       <div onClick={onClose} style={{ position:"absolute", inset:0, background:"rgba(42,33,24,.42)", backdropFilter:"blur(6px)" }} />
-      <div className="anim" style={{ position:"relative", background:C.white, borderRadius:24, padding:"44px 52px", width:"100%", maxWidth:820, maxHeight:"90vh", overflowY:"auto", boxShadow:"0 24px 80px rgba(0,0,0,.18)" }}>
-        <button onClick={onClose} style={{ position:"absolute", top:18, right:18, background:C.sand, border:"none", borderRadius:99, width:32, height:32, fontSize:18, color:C.muted, display:"flex", alignItems:"center", justifyContent:"center" }}>×</button>
+      <div className="anim" style={{ position:"relative", background:"var(--surface)", borderRadius:24, padding:"44px 52px", width:"100%", maxWidth:820, maxHeight:"90vh", overflowY:"auto", boxShadow:"0 24px 80px rgba(0,0,0,.18)" }}>
+        <button onClick={onClose} style={{ position:"absolute", top:18, right:18, background:"var(--surface-2)", border:"none", borderRadius:99, width:32, height:32, fontSize:18, color:"var(--muted-c)", display:"flex", alignItems:"center", justifyContent:"center" }}>×</button>
         <div style={{ marginBottom:28 }}>
-          <h2 style={{ fontFamily:"'Cormorant Garamond', serif", fontSize:24, fontWeight:600 }}>{title}</h2>
-          {subtitle && <p style={{ fontSize:13, color:C.muted, marginTop:4 }}>{subtitle}</p>}
+          <h2 style={{ fontFamily:"'Cormorant Garamond', serif", fontSize:24, fontWeight:600, color:"var(--text-c)" }}>{title}</h2>
+          {subtitle && <p style={{ fontSize:13, color:"var(--muted-c)", marginTop:4 }}>{subtitle}</p>}
         </div>
         {children}
       </div>
@@ -178,7 +198,7 @@ const ConfirmDialog = ({ open, message, onConfirm, onCancel }) => {
   return (
     <div style={{ position:"fixed", inset:0, zIndex:600, display:"flex", alignItems:"center", justifyContent:"center", padding:20 }}>
       <div onClick={onCancel} style={{ position:"absolute", inset:0, background:"rgba(42,33,24,.42)", backdropFilter:"blur(4px)" }} />
-      <div className="anim" style={{ position:"relative", background:C.white, borderRadius:20, padding:"32px 36px", width:"100%", maxWidth:380, boxShadow:"0 16px 60px rgba(0,0,0,.16)", textAlign:"center" }}>
+      <div className="anim" style={{ position:"relative", background:"var(--surface)", borderRadius:20, padding:"32px 36px", width:"100%", maxWidth:380, boxShadow:"0 16px 60px rgba(0,0,0,.16)", textAlign:"center" }}>
         <div style={{ fontSize:36, marginBottom:12 }}>🗑️</div>
         <h3 style={{ fontFamily:"'Cormorant Garamond', serif", fontSize:22, fontWeight:600, marginBottom:8 }}>Confirmer la suppression</h3>
         <p style={{ fontSize:14, color:C.muted, marginBottom:24, lineHeight:1.6 }}>{message}</p>
@@ -203,7 +223,7 @@ const Empty = ({ icon, title, sub, action }) => (
 const CustomTooltip = ({ active, payload, label }) => {
   if (!active || !payload?.length) return null;
   return (
-    <div style={{ background:C.white, border:`1px solid ${C.border}`, borderRadius:12, padding:"10px 16px", fontSize:13, boxShadow:"0 4px 20px rgba(0,0,0,.08)" }}>
+    <div style={{ background:"var(--surface)", border:"1px solid var(--border-c)", borderRadius:12, padding:"10px 16px", fontSize:13, boxShadow:"0 4px 20px rgba(0,0,0,.08)" }}>
       <div style={{ fontWeight:600, marginBottom:6 }}>{label}</div>
       {payload.map((p,i) => (
         <div key={i} style={{ display:"flex", gap:10, alignItems:"center" }}>
@@ -234,7 +254,7 @@ const exportCSV = (data, filename, columns) => {
 // ─── ONBOARDING ───────────────────────────────────────────────────────────────
 const Onboarding = ({ onClose, onGoParams, onLoadData }) => (
   <div style={{ position:"fixed", inset:0, zIndex:700, display:"flex", alignItems:"center", justifyContent:"center", padding:20, background:"rgba(42,33,24,.55)", backdropFilter:"blur(8px)" }}>
-    <div className="anim" style={{ background:C.white, borderRadius:28, padding:"52px 56px", width:"100%", maxWidth:560, boxShadow:"0 32px 100px rgba(0,0,0,.2)", textAlign:"center" }}>
+    <div className="anim" style={{ background:"var(--surface)", borderRadius:28, padding:"52px 56px", width:"100%", maxWidth:560, boxShadow:"0 32px 100px rgba(0,0,0,.2)", textAlign:"center" }}>
       <div style={{ fontFamily:"'Cormorant Garamond', serif", fontSize:64, fontWeight:600, color:C.coral, lineHeight:1, marginBottom:8 }}>Clo'</div>
       <div style={{ fontSize:13, color:C.muted, letterSpacing:".1em", textTransform:"uppercase", marginBottom:32 }}>Votre tableau de bord freelance</div>
       <div style={{ display:"flex", flexDirection:"column", gap:16, marginBottom:36, textAlign:"left" }}>
@@ -283,7 +303,7 @@ const Dashboard=({prestations,frais,settings,onNewPrestation,year})=>{
       <KPI label="Bénéfice réel net" value={`${benefice.toLocaleString("fr-FR",{minimumFractionDigits:2})} €`} sub="Net − frais pro" icon="💎" color={benefice>=0?C.green:C.red}/>
     </div>
     <ProgressBar label="Salaire net mensuel moyen" value={netMoyenMensuel} objectif={objectif} sub="Moyenne sur les mois avec au moins une prestation"/>
-    {objectifAnnuel>0&&(<div style={{background:C.white,borderRadius:16,border:`1px solid ${C.border}`,padding:"18px 22px",marginBottom:20}}>
+    {objectifAnnuel>0&&(<div style={{background:"var(--surface)",borderRadius:16,border:"1px solid var(--border-c)",padding:"18px 22px",marginBottom:20}}>
       <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:12}}>
         <div><h3 style={{fontFamily:"'Cormorant Garamond', serif",fontSize:18,fontWeight:600,marginBottom:3}}>Progression vers l'objectif annuel</h3><div style={{fontSize:12,color:C.muted}}>Objectif : {objectifAnnuel.toLocaleString("fr-FR")} € · Bénéfice : <strong style={{color:benefice>=0?C.green:C.red}}>{benefice.toLocaleString("fr-FR",{maximumFractionDigits:0})} €</strong></div></div>
         <div style={{textAlign:"right",flexShrink:0,marginLeft:20}}><div style={{fontFamily:"'Cormorant Garamond', serif",fontSize:26,fontWeight:600,color:pctAnnuel>=100?C.green:pctAnnuel>=60?C.yellow:C.red,lineHeight:1}}>{Math.round(pctAnnuel)}%</div><div style={{fontSize:11,color:C.muted,marginTop:2}}>atteint</div></div>
@@ -980,19 +1000,19 @@ const DataModal = ({ open, onClose, onSave, onLoad, hasData }) => {
   return (
     <div style={{ position:"fixed", inset:0, zIndex:600, display:"flex", alignItems:"center", justifyContent:"center", padding:20 }}>
       <div onClick={onClose} style={{ position:"absolute", inset:0, background:"rgba(42,33,24,.42)", backdropFilter:"blur(6px)" }} />
-      <div className="anim" style={{ position:"relative", background:C.white, borderRadius:24, padding:"36px 40px", width:"100%", maxWidth:460, boxShadow:"0 24px 80px rgba(0,0,0,.18)" }}>
-        <button onClick={onClose} style={{ position:"absolute", top:18, right:18, background:C.sand, border:"none", borderRadius:99, width:32, height:32, fontSize:18, color:C.muted, display:"flex", alignItems:"center", justifyContent:"center" }}>×</button>
-        <h2 style={{ fontFamily:"'Cormorant Garamond', serif", fontSize:26, fontWeight:600, marginBottom:6 }}>Mes données</h2>
-        <p style={{ fontSize:13, color:C.muted, marginBottom:28, lineHeight:1.6 }}>Vos données restent <strong>uniquement sur votre ordinateur</strong>. Sauvegardez avant de quitter, rechargez à la prochaine visite.</p>
-        <div style={{ background:C.sand, borderRadius:16, padding:"20px 22px", marginBottom:12 }}>
-          <div style={{ fontWeight:600, fontSize:15, marginBottom:3 }}>💾  Sauvegarder</div>
-          <div style={{ fontSize:12, color:C.muted, marginBottom:12 }}>Télécharge un fichier <code style={{ background:C.sandDark, padding:"1px 5px", borderRadius:4 }}>.json</code> avec toutes vos données.</div>
+      <div className="anim" style={{ position:"relative", background:"var(--surface)", borderRadius:24, padding:"36px 40px", width:"100%", maxWidth:460, boxShadow:"0 24px 80px rgba(0,0,0,.18)" }}>
+        <button onClick={onClose} style={{ position:"absolute", top:18, right:18, background:"var(--surface-2)", border:"none", borderRadius:99, width:32, height:32, fontSize:18, color:"var(--muted-c)", display:"flex", alignItems:"center", justifyContent:"center" }}>×</button>
+        <h2 style={{ fontFamily:"'Cormorant Garamond', serif", fontSize:26, fontWeight:600, marginBottom:6, color:"var(--text-c)" }}>Mes données</h2>
+        <p style={{ fontSize:13, color:"var(--muted-c)", marginBottom:28, lineHeight:1.6 }}>Vos données restent <strong>uniquement sur votre ordinateur</strong>. Sauvegardez avant de quitter, rechargez à la prochaine visite.</p>
+        <div style={{ background:"var(--surface-2)", borderRadius:16, padding:"20px 22px", marginBottom:12 }}>
+          <div style={{ fontWeight:600, fontSize:15, marginBottom:3, color:"var(--text-c)" }}>💾  Sauvegarder</div>
+          <div style={{ fontSize:12, color:"var(--muted-c)", marginBottom:12 }}>Télécharge un fichier <code style={{ background:"var(--surface-3)", padding:"1px 5px", borderRadius:4 }}>.json</code> avec toutes vos données.</div>
           <Btn onClick={onSave} style={{ width:"100%", justifyContent:"center" }} variant={hasData?"primary":"ghost"}>Télécharger mes données</Btn>
         </div>
-        <div style={{ background:C.sagePale, borderRadius:16, padding:"20px 22px" }}>
-          <div style={{ fontWeight:600, fontSize:15, marginBottom:3 }}>📂  Charger</div>
-          <div style={{ fontSize:12, color:C.muted, marginBottom:12 }}>Sélectionnez un fichier précédemment sauvegardé.{hasData&&<span style={{ color:C.red }}> Attention : remplace les données actuelles.</span>}</div>
-          <label style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:8, padding:"10px 22px", borderRadius:12, border:`1.5px solid ${C.sage}`, background:C.white, color:C.sageDark, fontWeight:500, fontSize:14, cursor:"pointer" }}>
+        <div style={{ background:"var(--surface-2)", borderRadius:16, padding:"20px 22px", border:`1px solid ${C.sage}30` }}>
+          <div style={{ fontWeight:600, fontSize:15, marginBottom:3, color:C.sage }}>📂  Charger</div>
+          <div style={{ fontSize:12, color:"var(--muted-c)", marginBottom:12 }}>Sélectionnez un fichier précédemment sauvegardé.{hasData&&<span style={{ color:C.red }}> Attention : remplace les données actuelles.</span>}</div>
+          <label style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:8, padding:"10px 22px", borderRadius:12, border:`1.5px solid ${C.sage}`, background:"var(--surface)", color:C.sageDark, fontWeight:500, fontSize:14, cursor:"pointer" }}>
             Choisir un fichier
             <input type="file" accept=".json" onChange={handleFile} style={{ display:"none" }} />
           </label>
@@ -1026,6 +1046,9 @@ export default function App() {
   const totalFraisYear = frais.filter(f=>f.date?.startsWith(String(year))).reduce((a,f)=>a+(parseFloat(f.montant)||0),0);
   const relanceCount = useMemo(()=>{const today=new Date();return prestations.filter(p=>{const f=factures[p.id]||{};if(f.total!=="Attente")return false;const d=new Date(p.date);return!isNaN(d)&&(today-d)/(1000*60*60*24)>30;}).length;},[prestations,factures]);
   const bg=darkMode?"#1A1510":C.bg,wh=darkMode?"#231E18":C.white,sn=darkMode?"#2C261E":C.sand,tx=darkMode?"#F2EAE0":C.text,mu=darkMode?"#857870":C.muted,br=darkMode?"#3C342A":C.border;
+
+  // Dark mode — apply class on :root so CSS vars cascade to fixed-positioned elements
+  useEffect(() => { document.documentElement.classList.toggle("dark", darkMode); }, [darkMode]);
 
   // Track unsaved changes
   useEffect(() => { setHasUnsaved(true); }, [prestations, frais, factures, settings]);
@@ -1096,14 +1119,14 @@ export default function App() {
               )}
             </div>
             {searchResults && (
-              <div style={{ background:C.white, border:`1px solid ${C.border}`, borderRadius:12, marginTop:6, overflow:"hidden", boxShadow:"0 4px 20px rgba(0,0,0,.08)", maxHeight:280, overflowY:"auto" }}>
+              <div style={{ background:"var(--surface)", border:"1px solid var(--border-c)", borderRadius:12, marginTop:6, overflow:"hidden", boxShadow:"0 4px 20px rgba(0,0,0,.08)", maxHeight:280, overflowY:"auto" }}>
                 {searchResults.total===0 ? (
-                  <div style={{ padding:"16px", fontSize:13, color:C.muted, textAlign:"center" }}>Aucun résultat</div>
+                  <div style={{ padding:"16px", fontSize:13, color:"var(--muted-c)", textAlign:"center" }}>Aucun résultat</div>
                 ) : (
                   <>
                     {searchResults.prestations.length>0 && (
                       <>
-                        <div style={{ padding:"8px 14px", fontSize:11, fontWeight:600, color:C.muted, textTransform:"uppercase", letterSpacing:".07em", background:C.sand }}>Prestations ({searchResults.prestations.length})</div>
+                        <div style={{ padding:"8px 14px", fontSize:11, fontWeight:600, color:"var(--muted-c)", textTransform:"uppercase", letterSpacing:".07em", background:"var(--surface-2)" }}>Prestations ({searchResults.prestations.length})</div>
                         {searchResults.prestations.slice(0,4).map(p=>(
                           <div key={p.id} onClick={()=>{setView("prestations");setGlobalSearch("");}} style={{ padding:"10px 14px", cursor:"pointer", borderBottom:`1px solid ${C.border}` }}
                             onMouseEnter={e=>e.currentTarget.style.background=C.coralPale} onMouseLeave={e=>e.currentTarget.style.background=""}>
@@ -1115,7 +1138,7 @@ export default function App() {
                     )}
                     {searchResults.frais.length>0 && (
                       <>
-                        <div style={{ padding:"8px 14px", fontSize:11, fontWeight:600, color:C.muted, textTransform:"uppercase", letterSpacing:".07em", background:C.sand }}>Frais ({searchResults.frais.length})</div>
+                        <div style={{ padding:"8px 14px", fontSize:11, fontWeight:600, color:"var(--muted-c)", textTransform:"uppercase", letterSpacing:".07em", background:"var(--surface-2)" }}>Frais ({searchResults.frais.length})</div>
                         {searchResults.frais.slice(0,3).map(f=>(
                           <div key={f.id} onClick={()=>{setView("frais");setGlobalSearch("");}} style={{ padding:"10px 14px", cursor:"pointer", borderBottom:`1px solid ${C.border}` }}
                             onMouseEnter={e=>e.currentTarget.style.background=C.coralPale} onMouseLeave={e=>e.currentTarget.style.background=""}>
