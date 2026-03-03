@@ -103,6 +103,21 @@ const G = `
   .badge-coral  { background:${C.coralPale};  color:${C.coralDeep}; }
   .badge-red    { background:${C.redPale};    color:${C.red}; }
   .badge-blue   { background:${C.bluePale};   color:${C.blue}; }
+
+  @keyframes slideInLeft { from { transform: translateX(-100%); } to { transform: translateX(0); } }
+  .drawer-panel { animation: slideInLeft .24s cubic-bezier(.4,0,.2,1) both; }
+  .tbl-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+  @media (max-width: 768px) {
+    .grid-2col { grid-template-columns: 1fr !important; }
+    .form-grid { grid-template-columns: 1fr !important; }
+    .form-grid > * { grid-column: auto !important; }
+    .modal-overlay { align-items: flex-end !important; padding: 0 !important; }
+    .modal-box { border-radius: 24px 24px 0 0 !important; max-width: 100% !important; width: 100% !important; padding: 28px 20px 40px !important; max-height: 92vh !important; }
+    .confirm-box { border-radius: 20px 20px 0 0 !important; max-width: 100% !important; width: 100% !important; padding: 28px 20px 36px !important; }
+    thead th { padding: 10px 12px !important; font-size: 10px !important; }
+    tbody td { padding: 10px 12px !important; }
+  }
 `;
 
 // ─── ATOMS ────────────────────────────────────────────────────────────────────
@@ -180,9 +195,9 @@ const ProgressBar = ({ label, value, objectif, sub }) => {
 const Modal = ({ open, onClose, title, subtitle, children }) => {
   if (!open) return null;
   return (
-    <div style={{ position:"fixed", inset:0, zIndex:500, display:"flex", alignItems:"center", justifyContent:"center", padding:"20px", paddingTop:"8vh" }}>
+    <div className="modal-overlay" style={{ position:"fixed", inset:0, zIndex:500, display:"flex", alignItems:"center", justifyContent:"center", padding:"20px", paddingTop:"8vh" }}>
       <div onClick={onClose} style={{ position:"absolute", inset:0, background:"rgba(42,33,24,.42)", backdropFilter:"blur(6px)" }} />
-      <div className="anim" style={{ position:"relative", background:"var(--surface)", borderRadius:24, padding:"44px 52px", width:"100%", maxWidth:820, maxHeight:"90vh", overflowY:"auto", boxShadow:"0 24px 80px rgba(0,0,0,.18)" }}>
+      <div className="anim modal-box" style={{ position:"relative", background:"var(--surface)", borderRadius:24, padding:"44px 52px", width:"100%", maxWidth:820, maxHeight:"90vh", overflowY:"auto", boxShadow:"0 24px 80px rgba(0,0,0,.18)" }}>
         <button onClick={onClose} style={{ position:"absolute", top:18, right:18, background:"var(--surface-2)", border:"none", borderRadius:99, width:32, height:32, fontSize:18, color:"var(--muted-c)", display:"flex", alignItems:"center", justifyContent:"center" }}>×</button>
         <div style={{ marginBottom:28 }}>
           <h2 style={{ fontFamily:"'Cormorant Garamond', serif", fontSize:24, fontWeight:600, color:"var(--text-c)" }}>{title}</h2>
@@ -198,9 +213,9 @@ const Modal = ({ open, onClose, title, subtitle, children }) => {
 const ConfirmDialog = ({ open, message, onConfirm, onCancel }) => {
   if (!open) return null;
   return (
-    <div style={{ position:"fixed", inset:0, zIndex:600, display:"flex", alignItems:"center", justifyContent:"center", padding:20 }}>
+    <div style={{ position:"fixed", inset:0, zIndex:600, display:"flex", alignItems:"center", justifyContent:"center", padding:20 }} className="modal-overlay">
       <div onClick={onCancel} style={{ position:"absolute", inset:0, background:"rgba(42,33,24,.42)", backdropFilter:"blur(4px)" }} />
-      <div className="anim" style={{ position:"relative", background:"var(--surface)", borderRadius:20, padding:"32px 36px", width:"100%", maxWidth:380, boxShadow:"0 16px 60px rgba(0,0,0,.16)", textAlign:"center" }}>
+      <div className="anim confirm-box" style={{ position:"relative", background:"var(--surface)", borderRadius:20, padding:"32px 36px", width:"100%", maxWidth:380, boxShadow:"0 16px 60px rgba(0,0,0,.16)", textAlign:"center" }}>
         <div style={{ fontSize:36, marginBottom:12 }}>🗑️</div>
         <h3 style={{ fontFamily:"'Cormorant Garamond', serif", fontSize:22, fontWeight:600, marginBottom:8 }}>Confirmer la suppression</h3>
         <p style={{ fontSize:14, color:"var(--muted-c)", marginBottom:24, lineHeight:1.6 }}>{message}</p>
@@ -313,7 +328,7 @@ const Dashboard=({prestations,frais,settings,onNewPrestation,year})=>{
       <div style={{background:"var(--surface-2)",borderRadius:99,height:10,marginBottom:10}}><div style={{background:pctAnnuel>=100?C.green:pctAnnuel>=60?C.yellow:C.red,width:`${Math.min(100,Math.max(0,pctAnnuel))}%`,height:"100%",borderRadius:99,transition:"width 1.2s ease"}}/></div>
       <div style={{display:"flex",justifyContent:"space-between",fontSize:12,color:"var(--muted-c)"}}><span>{benefice<objectifAnnuel&&benefice>=0?`Il manque ${(objectifAnnuel-benefice).toLocaleString("fr-FR",{maximumFractionDigits:0})} €`:benefice<0?"Bénéfice négatif":"🎉 Objectif atteint !"}</span>{projAnnuelle>0&&<span>Projection : {Math.round(projAnnuelle).toLocaleString("fr-FR")} € sur l'année</span>}</div>
     </div>)}
-    <div style={{display:"grid",gridTemplateColumns:"2fr 1fr",gap:20,marginBottom:20}}>
+    <div className="grid-2col" style={{display:"grid",gridTemplateColumns:"2fr 1fr",gap:20,marginBottom:20}}>
       <Card>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:22}}><h3 style={{fontFamily:"'Cormorant Garamond', serif",fontSize:19,fontWeight:600}}>CA mensuel</h3><div style={{display:"flex",gap:6}}>{[["year","Année entière"],["ytd","À ce jour"]].map(([r,l])=>(<button key={r} onClick={()=>setRange(r)} style={{padding:"5px 13px",borderRadius:8,border:"none",fontSize:12,fontFamily:"'DM Sans', sans-serif",fontWeight:500,background:range===r?C.coral:"var(--surface-2)",color:range===r?"white":"var(--muted-c)"}}>{l}</button>))}</div></div>
         <ResponsiveContainer width="100%" height={220}><BarChart data={chartData} barGap={3} barCategoryGap="35%"><CartesianGrid strokeDasharray="3 3" stroke={C.border} vertical={false}/><XAxis dataKey="mois" tick={{fontSize:12,fill:C.muted}} axisLine={false} tickLine={false}/><YAxis tick={{fontSize:12,fill:C.muted}} axisLine={false} tickLine={false} width={50} tickFormatter={v=>v?`${(v/1000).toFixed(0)}k`:"0"}/><Tooltip content={<CustomTooltip/>} cursor={{fill:C.coralPale,radius:8}}/><Bar dataKey="CA" radius={[6,6,0,0]} name="CA Brut">{chartData.map((e,i)=><Cell key={i} fill={e.idx===currentMonth?C.coralDeep:C.coral}/>)}</Bar><Bar dataKey="Net" fill={C.sage} radius={[6,6,0,0]} name="CA Net"/><Bar dataKey="Frais" fill={C.yellow} radius={[6,6,0,0]} name="Frais"/></BarChart></ResponsiveContainer>
@@ -329,7 +344,7 @@ const Dashboard=({prestations,frais,settings,onNewPrestation,year})=>{
     </Card>
     <Card noPad>
       <div style={{padding:"18px 24px",borderBottom:"1px solid var(--border-c)",display:"flex",justifyContent:"space-between",alignItems:"center"}}><h3 style={{fontFamily:"'Cormorant Garamond', serif",fontSize:19,fontWeight:600}}>Prestations récentes</h3><span style={{fontSize:12,color:"var(--muted-c)"}}>{pYear.length} au total</span></div>
-      <table><thead><tr><th>Date</th><th>Client</th><th>Prestation</th><th>Tarif</th><th>Statut</th></tr></thead><tbody>{[...pYear].sort((a,b)=>new Date(b.date)-new Date(a.date)).slice(0,6).map(s=>(<tr key={s.id}><td style={{color:"var(--muted-c)",fontSize:13}}>{s.date}</td><td style={{fontWeight:500}}>{s.nom}</td><td><span className="badge badge-sage">{s.type}</span></td><td style={{fontWeight:700,color:C.coral,whiteSpace:"nowrap"}}>{s.tarif.toLocaleString("fr-FR")} €</td><td><span className={`badge ${s.declare==="Oui"?"badge-green":"badge-yellow"}`}>{s.declare==="Oui"?"✓ Déclaré":"⏳ En attente"}</span></td></tr>))}</tbody></table>
+<div className="tbl-wrap"><table><thead><tr><th>Date</th><th>Client</th><th>Prestation</th><th>Tarif</th><th>Statut</th></tr></thead><tbody>{[...pYear].sort((a,b)=>new Date(b.date)-new Date(a.date)).slice(0,6).map(s=>(<tr key={s.id}><td style={{color:"var(--muted-c)",fontSize:13}}>{s.date}</td><td style={{fontWeight:500}}>{s.nom}</td><td><span className="badge badge-sage">{s.type}</span></td><td style={{fontWeight:700,color:C.coral,whiteSpace:"nowrap"}}>{s.tarif.toLocaleString("fr-FR")} €</td><td><span className={`badge ${s.declare==="Oui"?"badge-green":"badge-yellow"}`}>{s.declare==="Oui"?"✓ Déclaré":"⏳ En attente"}</span></td></tr>))}</tbody></table></div>
     </Card>
     <RegionBlocks prestations={pYear}/>
   </div>);
@@ -427,7 +442,7 @@ const Prestations = ({ prestations, setPrestations, settings, triggerNew, setTri
         <Card><Empty icon="📋" title="Aucune prestation pour l'instant" sub="Ajoutez votre première prestation pour commencer le suivi." action={<Btn onClick={()=>{setEditId(null);setForm(fresh());setModal(true);}}>＋ Ajouter une prestation</Btn>} /></Card>
       ) : (
         <Card noPad>
-          <table>
+<div className="tbl-wrap"><table>
             <thead><tr><th>Date</th><th>Client</th><th>Prestation</th><th>Tarif</th><th>Paiement</th><th>Déclaré</th><th>Région</th><th style={{width:72}}></th></tr></thead>
             <tbody>
               {displayed.length===0 && <tr><td colSpan={8} style={{ textAlign:"center", color:"var(--muted-c)", padding:40 }}>Aucun résultat</td></tr>}
@@ -446,12 +461,12 @@ const Prestations = ({ prestations, setPrestations, settings, triggerNew, setTri
                 </tr>
               ))}
             </tbody>
-          </table>
+          </table></div>
         </Card>
       )}
 
       <Modal open={modal} onClose={()=>setModal(false)} title={editId?"Modifier la prestation":"Nouvelle prestation"} subtitle="Remplissez les informations de la prestation">
-        <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:16 }}>
+        <div className="form-grid" style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:16 }}>
           <Field label="Date"><input type="date" value={form.date} onChange={e=>upd("date",e.target.value)} /></Field>
           <Field label="Mois (automatique)"><input value={form.mois} readOnly style={{ background:"var(--surface-2)", color:"var(--muted-c)" }} /></Field>
           <Field label="Nom du client"><input placeholder="Prénom Nom" value={form.nom} onChange={e=>upd("nom",e.target.value)} /></Field>
@@ -690,7 +705,7 @@ const Frais = ({ frais, setFrais }) => {
         <Card><Empty icon="🧾" title="Aucun frais enregistré" sub="Ajoutez vos dépenses professionnelles pour suivre leur évolution." action={<Btn onClick={openNew}>＋ Ajouter un frais</Btn>} /></Card>
       ) : (
         <Card noPad>
-          <table>
+<div className="tbl-wrap"><table>
             <thead><tr><th>Date</th><th>Libellé</th><th>Catégorie</th><th>Montant</th><th>Paiement</th><th>Commentaire</th><th style={{width:72}}></th></tr></thead>
             <tbody>
               {displayed.length===0 && <tr><td colSpan={7} style={{ textAlign:"center", color:"var(--muted-c)", padding:40 }}>Aucun résultat</td></tr>}
@@ -706,12 +721,12 @@ const Frais = ({ frais, setFrais }) => {
                 </tr>
               ))}
             </tbody>
-          </table>
+          </table></div>
         </Card>
       )}
 
       <Modal open={modal} onClose={()=>setModal(false)} title={editId?"Modifier le frais":"Nouveau frais"} subtitle="Renseignez les informations de la dépense">
-        <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:16 }}>
+        <div className="form-grid" style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:16 }}>
           <Field label="Date"><input type="date" value={form.date} onChange={e=>upd("date",e.target.value)} /></Field>
           <Field label="Mois (automatique)"><input value={form.mois} readOnly style={{ background:"var(--surface-2)", color:"var(--muted-c)" }} /></Field>
           <Field label="Montant (€)"><input type="number" min={0} step={0.01} value={form.montant} onChange={e=>upd("montant",e.target.value)} placeholder="0" /></Field>
@@ -788,7 +803,7 @@ const Bilan = ({ prestations, frais, factures, settings, year }) => {
         <KPI label="Bénéfice réel net" value={`${benefice.toLocaleString("fr-FR",{minimumFractionDigits:2})} €`}        sub="Net après tout" icon="💎" color={benefice>=0?C.green:C.red} />
       </div>
 
-      <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:20, marginBottom:20 }}>
+      <div className="grid-2col" style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:20, marginBottom:20 }}>
         {/* Compte de résultat */}
         <Card>
           <h3 style={{ fontFamily:"'Cormorant Garamond', serif", fontSize:20, fontWeight:600, marginBottom:20 }}>Compte de résultat</h3>
@@ -837,7 +852,7 @@ const Bilan = ({ prestations, frais, factures, settings, year }) => {
         <div style={{ padding:"18px 24px", borderBottom:"1px solid var(--border-c)" }}>
           <h3 style={{ fontFamily:"'Cormorant Garamond', serif", fontSize:19, fontWeight:600 }}>Détail mensuel {year}</h3>
         </div>
-        <table>
+<div className="tbl-wrap"><table>
           <thead><tr><th>Mois</th><th>CA Brut</th><th>Charges URSSAF</th><th>Frais</th><th>Bénéfice net</th><th>Prestations</th></tr></thead>
           <tbody>
             {MONTHS.map(m => {
@@ -858,7 +873,7 @@ const Bilan = ({ prestations, frais, factures, settings, year }) => {
               );
             })}
           </tbody>
-        </table>
+        </table></div>
       </Card>
     </div>
   );
@@ -913,7 +928,7 @@ const Clients=({prestations,factures})=>{
       ))}
     </div>
     <Card noPad>
-      <table>
+<div className="tbl-wrap"><table>
         <thead><tr><th>Client</th><th>Prestations</th><th>CA Total</th><th>Dernière prestation</th><th>Région</th></tr></thead>
         <tbody>{sorted.map(c=>(
           <tr key={c.nom} style={{cursor:"pointer"}} onClick={()=>setSelected(c.nom)}>
@@ -924,12 +939,12 @@ const Clients=({prestations,factures})=>{
             <td style={{fontSize:13,color:"var(--muted-c)"}}>{c.topRegion||"—"}</td>
           </tr>
         ))}</tbody>
-      </table>
+      </table></div>
     </Card>
     {sel&&(<Modal open={!!selected} onClose={()=>setSelected(null)} title={sel.nom} subtitle={`${sel.nb} prestation${sel.nb>1?"s":""} · ${sel.totalCA.toLocaleString("fr-FR")} € total`}>
       <table style={{marginBottom:20}}><thead><tr><th>Date</th><th>Type</th><th>Tarif</th><th>Statut</th></tr></thead>
       <tbody>{sel.prestations.map(p=>(<tr key={p.id}><td style={{color:"var(--muted-c)",fontSize:13}}>{p.date}</td><td><span className="badge badge-sage">{p.type}</span></td><td style={{fontWeight:700,color:C.coral}}>{p.tarif.toLocaleString("fr-FR")} €</td><td><span className={`badge ${getF(p.id).total==="Réglé"?"badge-green":getF(p.id).total==="Litige"?"badge-red":"badge-yellow"}`}>{getF(p.id).total}</span></td></tr>))}</tbody>
-      </table>
+      </table></div>
     </Modal>)}
   </div>);
 };
@@ -953,7 +968,7 @@ const Parametres=({settings,setSettings,darkMode,setDarkMode})=>{
         </button>
       </div>
     </Card>
-    <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:20,marginBottom:20}}>
+    <div className="grid-2col" style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:20,marginBottom:20}}>
       <Card>
         <h3 style={{fontFamily:"'Cormorant Garamond', serif",fontSize:20,fontWeight:600,marginBottom:22}}>Informations générales</h3>
         <div style={{display:"flex",flexDirection:"column",gap:16}}>
@@ -1000,9 +1015,9 @@ const DataModal = ({ open, onClose, onSave, onLoad, hasData }) => {
     reader.readAsText(file);
   };
   return (
-    <div style={{ position:"fixed", inset:0, zIndex:600, display:"flex", alignItems:"center", justifyContent:"center", padding:20 }}>
+    <div className="modal-overlay" style={{ position:"fixed", inset:0, zIndex:600, display:"flex", alignItems:"center", justifyContent:"center", padding:20 }}>
       <div onClick={onClose} style={{ position:"absolute", inset:0, background:"rgba(42,33,24,.42)", backdropFilter:"blur(6px)" }} />
-      <div className="anim" style={{ position:"relative", background:"var(--surface)", borderRadius:24, padding:"36px 40px", width:"100%", maxWidth:460, boxShadow:"0 24px 80px rgba(0,0,0,.18)" }}>
+      <div className="anim modal-box" style={{ position:"relative", background:"var(--surface)", borderRadius:24, padding:"36px 40px", width:"100%", maxWidth:460, boxShadow:"0 24px 80px rgba(0,0,0,.18)" }}>
         <button onClick={onClose} style={{ position:"absolute", top:18, right:18, background:"var(--surface-2)", border:"none", borderRadius:99, width:32, height:32, fontSize:18, color:"var(--muted-c)", display:"flex", alignItems:"center", justifyContent:"center" }}>×</button>
         <h2 style={{ fontFamily:"'Cormorant Garamond', serif", fontSize:26, fontWeight:600, marginBottom:6, color:"var(--text-c)" }}>Mes données</h2>
         <p style={{ fontSize:13, color:"var(--muted-c)", marginBottom:28, lineHeight:1.6 }}>Vos données restent <strong>uniquement sur votre ordinateur</strong>. Sauvegardez avant de quitter, rechargez à la prochaine visite.</p>
@@ -1042,6 +1057,8 @@ export default function App() {
   const [showOnboarding, setShowOnboarding] = useState(true);
   const [globalSearch, setGlobalSearch]     = useState("");
   const [year, setYear]               = useState(new Date().getFullYear());
+  const [isMobile, setIsMobile]       = useState(window.innerWidth <= 768);
+  const [drawerOpen, setDrawerOpen]   = useState(false);
 
   const totalCA  = prestations.filter(p=>p.date?.startsWith(String(year))).reduce((a,s)=>a+s.tarif,0);
   const totalNet = totalCA * (1 - settings.tauxCharges/100);
@@ -1049,6 +1066,16 @@ export default function App() {
   const relanceCount = useMemo(()=>{const today=new Date();return prestations.filter(p=>{const f=factures[p.id]||{};if(f.total!=="Attente")return false;const d=new Date(p.date);return!isNaN(d)&&(today-d)/(1000*60*60*24)>30;}).length;},[prestations,factures]);
   // Dark mode — apply class on :root so CSS vars cascade to fixed-positioned elements
   useEffect(() => { document.documentElement.classList.toggle("dark", darkMode); }, [darkMode]);
+
+  // Mobile detection
+  useEffect(() => {
+    const handler = () => setIsMobile(window.innerWidth <= 768);
+    window.addEventListener("resize", handler);
+    return () => window.removeEventListener("resize", handler);
+  }, []);
+
+  // Close drawer when navigating
+  const navigate = (id) => { setView(id); setDrawerOpen(false); };
 
   // Track unsaved changes
   useEffect(() => { setHasUnsaved(true); }, [prestations, frais, factures, settings]);
@@ -1093,124 +1120,150 @@ export default function App() {
     <>
       <style>{G}</style>
       {showOnboarding && prestations.length===0 && (
-        <Onboarding onClose={()=>setShowOnboarding(false)} onGoParams={()=>setView("params")} onLoadData={()=>setDataModal(true)} />
+        <Onboarding onClose={()=>setShowOnboarding(false)} onGoParams={()=>navigate("params")} onLoadData={()=>setDataModal(true)} />
       )}
       <div style={{ display:"flex", minHeight:"100vh", background:"var(--bg)", color:"var(--text-c)" }}>
 
-        {/* ── Sidebar ── */}
-        <aside style={{ width:224, background:"var(--surface)", borderRight:"1px solid var(--border-c)", display:"flex", flexDirection:"column", position:"sticky", top:0, height:"100vh", flexShrink:0 }}>
-          {/* Brand */}
-          <div style={{ padding:"28px 24px 20px", borderBottom:"1px solid var(--border-c)" }}>
-            <div style={{ fontFamily:"'Cormorant Garamond', serif", fontSize:42, fontWeight:600, color:C.coral, lineHeight:1, letterSpacing:"-0.03em" }}>Clo'</div>
-            <div style={{ fontSize:11, color:"var(--muted-c)", marginTop:6, letterSpacing:".09em", textTransform:"uppercase" }}>{settings.metier}</div>
+        {/* ── Mobile topbar ── */}
+        {isMobile && (
+          <div style={{ position:"fixed", top:0, left:0, right:0, height:56, background:"var(--surface)", borderBottom:"1px solid var(--border-c)", display:"flex", alignItems:"center", padding:"0 16px", zIndex:300, gap:12 }}>
+            <div style={{ fontFamily:"'Cormorant Garamond', serif", fontSize:30, fontWeight:600, color:C.coral, lineHeight:1, letterSpacing:"-0.03em", flex:"0 0 auto" }}>Clo'</div>
+            <div style={{ flex:1, fontSize:14, fontWeight:500, color:"var(--muted-c)", textAlign:"center", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>
+              {NAVS.find(n=>n.id===view)?.label || ""}
+            </div>
+            {hasUnsaved && prestations.length>0 && !savedFlash && (
+              <span style={{ width:8, height:8, borderRadius:"50%", background:C.coral, flexShrink:0 }} />
+            )}
+            <button onClick={()=>setDrawerOpen(true)} style={{ background:"none", border:"none", fontSize:22, color:"var(--text-c)", padding:"4px 6px", lineHeight:1, display:"flex", alignItems:"center" }}>☰</button>
           </div>
+        )}
 
-          {/* Global search */}
-          <div style={{ padding:"12px 12px 0" }}>
-            <div style={{ position:"relative" }}>
-              <input
-                placeholder="🔍  Rechercher…"
-                value={globalSearch}
-                onChange={e=>setGlobalSearch(e.target.value)}
-                style={{ fontSize:13, padding:"8px 12px", borderRadius:10 }}
-              />
-              {globalSearch && (
-                <button onClick={()=>setGlobalSearch("")} style={{ position:"absolute", right:10, top:"50%", transform:"translateY(-50%)", background:"none", border:"none", color:"var(--muted-c)", fontSize:16 }}>×</button>
+        {/* ── Mobile drawer overlay ── */}
+        {isMobile && drawerOpen && (
+          <div onClick={()=>setDrawerOpen(false)} style={{ position:"fixed", inset:0, zIndex:400, background:"rgba(0,0,0,.45)", backdropFilter:"blur(3px)" }} />
+        )}
+
+        {/* ── Sidebar (desktop) / Drawer (mobile) ── */}
+        {(!isMobile || drawerOpen) && (
+          <aside className={isMobile ? "drawer-panel" : ""} style={{ width:224, background:"var(--surface)", borderRight:"1px solid var(--border-c)", display:"flex", flexDirection:"column", position:isMobile?"fixed":"sticky", top:0, left:0, height:"100vh", flexShrink:0, zIndex:isMobile?401:undefined, overflowY:"auto" }}>
+            {/* Brand */}
+            <div style={{ padding:"28px 24px 20px", borderBottom:"1px solid var(--border-c)", display:"flex", alignItems:"center", justifyContent:"space-between" }}>
+              <div>
+                <div style={{ fontFamily:"'Cormorant Garamond', serif", fontSize:42, fontWeight:600, color:C.coral, lineHeight:1, letterSpacing:"-0.03em" }}>Clo'</div>
+                <div style={{ fontSize:11, color:"var(--muted-c)", marginTop:6, letterSpacing:".09em", textTransform:"uppercase" }}>{settings.metier}</div>
+              </div>
+              {isMobile && (
+                <button onClick={()=>setDrawerOpen(false)} style={{ background:"var(--surface-2)", border:"none", borderRadius:99, width:32, height:32, fontSize:18, color:"var(--muted-c)", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>×</button>
               )}
             </div>
-            {searchResults && (
-              <div style={{ background:"var(--surface)", border:"1px solid var(--border-c)", borderRadius:12, marginTop:6, overflow:"hidden", boxShadow:"0 4px 20px rgba(0,0,0,.08)", maxHeight:280, overflowY:"auto" }}>
-                {searchResults.total===0 ? (
-                  <div style={{ padding:"16px", fontSize:13, color:"var(--muted-c)", textAlign:"center" }}>Aucun résultat</div>
-                ) : (
-                  <>
-                    {searchResults.prestations.length>0 && (
-                      <>
-                        <div style={{ padding:"8px 14px", fontSize:11, fontWeight:600, color:"var(--muted-c)", textTransform:"uppercase", letterSpacing:".07em", background:"var(--surface-2)" }}>Prestations ({searchResults.prestations.length})</div>
-                        {searchResults.prestations.slice(0,4).map(p=>(
-                          <div key={p.id} onClick={()=>{setView("prestations");setGlobalSearch("");}} style={{ padding:"10px 14px", cursor:"pointer", borderBottom:"1px solid var(--border-c)" }}
-                            onMouseEnter={e=>e.currentTarget.style.background=C.coralPale} onMouseLeave={e=>e.currentTarget.style.background=""}>
-                            <div style={{ fontWeight:500, fontSize:13 }}>{p.nom}</div>
-                            <div style={{ fontSize:11, color:"var(--muted-c)" }}>{p.date} · {p.tarif.toLocaleString("fr-FR")} €</div>
-                          </div>
-                        ))}
-                      </>
-                    )}
-                    {searchResults.frais.length>0 && (
-                      <>
-                        <div style={{ padding:"8px 14px", fontSize:11, fontWeight:600, color:"var(--muted-c)", textTransform:"uppercase", letterSpacing:".07em", background:"var(--surface-2)" }}>Frais ({searchResults.frais.length})</div>
-                        {searchResults.frais.slice(0,3).map(f=>(
-                          <div key={f.id} onClick={()=>{setView("frais");setGlobalSearch("");}} style={{ padding:"10px 14px", cursor:"pointer", borderBottom:"1px solid var(--border-c)" }}
-                            onMouseEnter={e=>e.currentTarget.style.background=C.coralPale} onMouseLeave={e=>e.currentTarget.style.background=""}>
-                            <div style={{ fontWeight:500, fontSize:13 }}>{f.libelle}</div>
-                            <div style={{ fontSize:11, color:"var(--muted-c)" }}>{f.date} · {parseFloat(f.montant||0).toLocaleString("fr-FR")} €</div>
-                          </div>
-                        ))}
-                      </>
-                    )}
-                  </>
+
+            {/* Global search */}
+            <div style={{ padding:"12px 12px 0" }}>
+              <div style={{ position:"relative" }}>
+                <input
+                  placeholder="🔍  Rechercher…"
+                  value={globalSearch}
+                  onChange={e=>setGlobalSearch(e.target.value)}
+                  style={{ fontSize:13, padding:"8px 12px", borderRadius:10 }}
+                />
+                {globalSearch && (
+                  <button onClick={()=>setGlobalSearch("")} style={{ position:"absolute", right:10, top:"50%", transform:"translateY(-50%)", background:"none", border:"none", color:"var(--muted-c)", fontSize:16 }}>×</button>
                 )}
               </div>
-            )}
-          </div>
-
-          {/* Year selector */}
-          {availableYears.length>1 && (
-            <div style={{ padding:"10px 12px 0" }}>
-              <select value={year} onChange={e=>setYear(parseInt(e.target.value))} style={{ fontSize:12, padding:"6px 10px", borderRadius:8, color:"var(--muted-c)" }}>
-                {availableYears.map(y=><option key={y}>{y}</option>)}
-              </select>
+              {searchResults && (
+                <div style={{ background:"var(--surface)", border:"1px solid var(--border-c)", borderRadius:12, marginTop:6, overflow:"hidden", boxShadow:"0 4px 20px rgba(0,0,0,.08)", maxHeight:280, overflowY:"auto" }}>
+                  {searchResults.total===0 ? (
+                    <div style={{ padding:"16px", fontSize:13, color:"var(--muted-c)", textAlign:"center" }}>Aucun résultat</div>
+                  ) : (
+                    <>
+                      {searchResults.prestations.length>0 && (
+                        <>
+                          <div style={{ padding:"8px 14px", fontSize:11, fontWeight:600, color:"var(--muted-c)", textTransform:"uppercase", letterSpacing:".07em", background:"var(--surface-2)" }}>Prestations ({searchResults.prestations.length})</div>
+                          {searchResults.prestations.slice(0,4).map(p=>(
+                            <div key={p.id} onClick={()=>{navigate("prestations");setGlobalSearch("");}} style={{ padding:"10px 14px", cursor:"pointer", borderBottom:"1px solid var(--border-c)" }}
+                              onMouseEnter={e=>e.currentTarget.style.background=C.coralPale} onMouseLeave={e=>e.currentTarget.style.background=""}>
+                              <div style={{ fontWeight:500, fontSize:13 }}>{p.nom}</div>
+                              <div style={{ fontSize:11, color:"var(--muted-c)" }}>{p.date} · {p.tarif.toLocaleString("fr-FR")} €</div>
+                            </div>
+                          ))}
+                        </>
+                      )}
+                      {searchResults.frais.length>0 && (
+                        <>
+                          <div style={{ padding:"8px 14px", fontSize:11, fontWeight:600, color:"var(--muted-c)", textTransform:"uppercase", letterSpacing:".07em", background:"var(--surface-2)" }}>Frais ({searchResults.frais.length})</div>
+                          {searchResults.frais.slice(0,3).map(f=>(
+                            <div key={f.id} onClick={()=>{navigate("frais");setGlobalSearch("");}} style={{ padding:"10px 14px", cursor:"pointer", borderBottom:"1px solid var(--border-c)" }}
+                              onMouseEnter={e=>e.currentTarget.style.background=C.coralPale} onMouseLeave={e=>e.currentTarget.style.background=""}>
+                              <div style={{ fontWeight:500, fontSize:13 }}>{f.libelle}</div>
+                              <div style={{ fontSize:11, color:"var(--muted-c)" }}>{f.date} · {parseFloat(f.montant||0).toLocaleString("fr-FR")} €</div>
+                            </div>
+                          ))}
+                        </>
+                      )}
+                    </>
+                  )}
+                </div>
+              )}
             </div>
-          )}
 
-          {/* Nav */}
-          <nav style={{ flex:1, padding:"12px 12px", display:"flex", flexDirection:"column", gap:3, overflowY:"auto" }}>
-            {NAVS.map(n => {
-              const active = view===n.id;
-              return (
-                <button key={n.id} onClick={()=>setView(n.id)} style={{ display:"flex", alignItems:"center", gap:10, padding:"10px 14px", borderRadius:12, border:"none", width:"100%", textAlign:"left", background:active?C.coralPale:"transparent", color:active?C.coralDeep:"var(--muted-c)", fontFamily:"'DM Sans', sans-serif", fontWeight:active?600:400, fontSize:14 }}>
-                  <span style={{ fontSize:14 }}>{n.icon}</span><span style={{ flex:1 }}>{n.label}</span>{n.id==="facturier"&&relanceCount>0&&(<span style={{ background:C.red, color:"white", borderRadius:99, fontSize:10, fontWeight:700, padding:"1px 7px", minWidth:18, textAlign:"center", lineHeight:"18px", display:"inline-block" }}>{relanceCount}</span>)}
-                </button>
-              );
-            })}
-          </nav>
-
-          {/* Summary + save */}
-          <div style={{ padding:"0 12px 16px" }}>
-            {prestations.length>0 && (
-              <div style={{ background:"var(--surface-2)", borderRadius:14, padding:"12px 14px", marginBottom:8 }}>
-                <div style={{ fontSize:10, color:"var(--muted-c)", fontWeight:600, textTransform:"uppercase", letterSpacing:".08em", marginBottom:6 }}>{year}</div>
-                <div style={{ fontFamily:"'Cormorant Garamond', serif", fontSize:22, fontWeight:600, color:C.coral, lineHeight:1 }}>{totalCA.toLocaleString("fr-FR",{maximumFractionDigits:0})} €</div>
-                <div style={{ fontSize:11, color:"var(--muted-c)", marginTop:4 }}>{totalNet.toLocaleString("fr-FR",{maximumFractionDigits:0})} € net</div>
-                {totalFraisYear>0 && <div style={{ fontSize:11, color:C.red, marginTop:2 }}>−{totalFraisYear.toLocaleString("fr-FR",{maximumFractionDigits:0})} € frais</div>}
-                <div style={{ fontSize:11, color:"var(--muted-c)", marginTop:2 }}>{prestations.filter(p=>p.date?.startsWith(String(year))).length} prestation{prestations.length>1?"s":""}</div>
+            {/* Year selector */}
+            {availableYears.length>1 && (
+              <div style={{ padding:"10px 12px 0" }}>
+                <select value={year} onChange={e=>setYear(parseInt(e.target.value))} style={{ fontSize:12, padding:"6px 10px", borderRadius:8, color:"var(--muted-c)" }}>
+                  {availableYears.map(y=><option key={y}>{y}</option>)}
+                </select>
               </div>
             )}
 
-            <button onClick={()=>setDataModal(true)} style={{
-              width:"100%", padding:"10px 14px", borderRadius:12, position:"relative",
-              border:`1.5px solid ${savedFlash?C.green:hasUnsaved?C.coral:C.border}`,
-              background:savedFlash?C.greenPale:hasUnsaved?C.coralPale:"var(--surface)",
-              color:savedFlash?C.green:hasUnsaved?C.coralDeep:C.muted,
-              fontSize:13, fontFamily:"'DM Sans', sans-serif", fontWeight:500,
-              display:"flex", alignItems:"center", justifyContent:"center", gap:7, transition:"all .3s",
-            }}>
-              {savedFlash ? "✓ Sauvegardé !" : hasUnsaved&&prestations.length>0 ? "💾 Sauvegarder !" : "💾 Données"}
-              {hasUnsaved && prestations.length>0 && !savedFlash && (
-                <span style={{ width:7, height:7, borderRadius:"50%", background:C.coral, flexShrink:0 }} />
-              )}
-            </button>
+            {/* Nav */}
+            <nav style={{ flex:1, padding:"12px 12px", display:"flex", flexDirection:"column", gap:3, overflowY:"auto" }}>
+              {NAVS.map(n => {
+                const active = view===n.id;
+                return (
+                  <button key={n.id} onClick={()=>navigate(n.id)} style={{ display:"flex", alignItems:"center", gap:10, padding:"10px 14px", borderRadius:12, border:"none", width:"100%", textAlign:"left", background:active?C.coralPale:"transparent", color:active?C.coralDeep:"var(--muted-c)", fontFamily:"'DM Sans', sans-serif", fontWeight:active?600:400, fontSize:14 }}>
+                    <span style={{ fontSize:14 }}>{n.icon}</span><span style={{ flex:1 }}>{n.label}</span>{n.id==="facturier"&&relanceCount>0&&(<span style={{ background:C.red, color:"white", borderRadius:99, fontSize:10, fontWeight:700, padding:"1px 7px", minWidth:18, textAlign:"center", lineHeight:"18px", display:"inline-block" }}>{relanceCount}</span>)}
+                  </button>
+                );
+              })}
+            </nav>
 
-            {!prestations.length && (
-              <button onClick={goNewPrestation} style={{ width:"100%", marginTop:8, padding:"10px 16px", borderRadius:12, border:`1.5px dashed ${C.border}`, background:"transparent", color:"var(--muted-c)", fontSize:13, fontFamily:"'DM Sans', sans-serif", display:"flex", alignItems:"center", justifyContent:"center", gap:6 }}>
-                ＋ Première prestation
+            {/* Summary + save */}
+            <div style={{ padding:"0 12px 16px" }}>
+              {prestations.length>0 && (
+                <div style={{ background:"var(--surface-2)", borderRadius:14, padding:"12px 14px", marginBottom:8 }}>
+                  <div style={{ fontSize:10, color:"var(--muted-c)", fontWeight:600, textTransform:"uppercase", letterSpacing:".08em", marginBottom:6 }}>{year}</div>
+                  <div style={{ fontFamily:"'Cormorant Garamond', serif", fontSize:22, fontWeight:600, color:C.coral, lineHeight:1 }}>{totalCA.toLocaleString("fr-FR",{maximumFractionDigits:0})} €</div>
+                  <div style={{ fontSize:11, color:"var(--muted-c)", marginTop:4 }}>{totalNet.toLocaleString("fr-FR",{maximumFractionDigits:0})} € net</div>
+                  {totalFraisYear>0 && <div style={{ fontSize:11, color:C.red, marginTop:2 }}>−{totalFraisYear.toLocaleString("fr-FR",{maximumFractionDigits:0})} € frais</div>}
+                  <div style={{ fontSize:11, color:"var(--muted-c)", marginTop:2 }}>{prestations.filter(p=>p.date?.startsWith(String(year))).length} prestation{prestations.length>1?"s":""}</div>
+                </div>
+              )}
+
+              <button onClick={()=>{ setDataModal(true); setDrawerOpen(false); }} style={{
+                width:"100%", padding:"10px 14px", borderRadius:12, position:"relative",
+                border:`1.5px solid ${savedFlash?C.green:hasUnsaved?C.coral:C.border}`,
+                background:savedFlash?C.greenPale:hasUnsaved?C.coralPale:"var(--surface)",
+                color:savedFlash?C.green:hasUnsaved?C.coralDeep:C.muted,
+                fontSize:13, fontFamily:"'DM Sans', sans-serif", fontWeight:500,
+                display:"flex", alignItems:"center", justifyContent:"center", gap:7, transition:"all .3s",
+              }}>
+                {savedFlash ? "✓ Sauvegardé !" : hasUnsaved&&prestations.length>0 ? "💾 Sauvegarder !" : "💾 Données"}
+                {hasUnsaved && prestations.length>0 && !savedFlash && (
+                  <span style={{ width:7, height:7, borderRadius:"50%", background:C.coral, flexShrink:0 }} />
+                )}
               </button>
-            )}
-          </div>
-        </aside>
+
+              {!prestations.length && (
+                <button onClick={goNewPrestation} style={{ width:"100%", marginTop:8, padding:"10px 16px", borderRadius:12, border:`1.5px dashed ${C.border}`, background:"transparent", color:"var(--muted-c)", fontSize:13, fontFamily:"'DM Sans', sans-serif", display:"flex", alignItems:"center", justifyContent:"center", gap:6 }}>
+                  ＋ Première prestation
+                </button>
+              )}
+            </div>
+          </aside>
+        )}
 
         {/* ── Main ── */}
-        <main style={{ flex:1, padding:"44px 52px", overflowY:"auto", minHeight:"100vh" }}>
+        <main style={{ flex:1, padding: isMobile ? "76px 16px 32px" : "44px 52px", overflowY:"auto", minHeight:"100vh", minWidth:0 }}>
           {view==="dashboard"   && <Dashboard   prestations={prestations} frais={frais} settings={settings} onNewPrestation={goNewPrestation} year={year} />}
           {view==="prestations" && <Prestations prestations={prestations} setPrestations={setPrestations} settings={settings} triggerNew={triggerNew} setTriggerNew={setTriggerNew} />}
           {view==="facturier"   && <Facturier   prestations={prestations} factures={factures} setFactures={setFactures} />}
