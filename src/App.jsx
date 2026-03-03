@@ -43,10 +43,11 @@ const G = `
   @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=DM+Sans:wght@300;400;500;600&display=swap');
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { height: 100%; }
-  body { background: ${C.bg}; font-family: 'DM Sans', sans-serif; color: ${C.text}; font-size: 14px; line-height: 1.5; }
+  body { background: var(--bg); font-family: 'DM Sans', sans-serif; color: var(--text-c); font-size: 14px; line-height: 1.5; }
 
   /* ── CSS Custom Properties (light defaults) ── */
   :root {
+    --bg: ${C.bg};
     --surface: ${C.white};
     --surface-2: ${C.sand};
     --surface-3: ${C.sandDark};
@@ -55,6 +56,7 @@ const G = `
     --muted-c: ${C.muted};
   }
   :root.dark {
+    --bg: #1A1510;
     --surface: linear-gradient(145deg, #2E2118 0%, #1E1510 100%);
     --surface-2: #2A1E18;
     --surface-3: #35251D;
@@ -163,14 +165,14 @@ const ProgressBar = ({ label, value, objectif, sub }) => {
       <div style={{ display:"flex", justifyContent:"space-between", alignItems:"baseline", marginBottom:12 }}>
         <div>
           <span style={{ fontFamily:"'Cormorant Garamond', serif", fontSize:17, fontWeight:600 }}>{label}</span>
-          <span style={{ fontSize:13, color:C.muted, marginLeft:10 }}>{value.toLocaleString("fr-FR",{maximumFractionDigits:0})} € · objectif {objectif.toLocaleString("fr-FR")} €</span>
+          <span style={{ fontSize:13, color:"var(--muted-c)", marginLeft:10 }}>{value.toLocaleString("fr-FR",{maximumFractionDigits:0})} € · objectif {objectif.toLocaleString("fr-FR")} €</span>
         </div>
         <span style={{ fontFamily:"'Cormorant Garamond', serif", fontSize:24, fontWeight:600, color }}>{pct}%</span>
       </div>
       <div style={{ background:"var(--surface-2)", borderRadius:99, height:8, overflow:"hidden" }}>
         <div style={{ height:"100%", borderRadius:99, background:color, width:`${pct}%`, transition:"width 1.2s cubic-bezier(.4,0,.2,1)" }} />
       </div>
-      {sub && <div style={{ fontSize:12, color:C.muted, marginTop:10 }}>{sub}</div>}
+      {sub && <div style={{ fontSize:12, color:"var(--muted-c)", marginTop:10 }}>{sub}</div>}
     </Card>
   );
 };
@@ -201,7 +203,7 @@ const ConfirmDialog = ({ open, message, onConfirm, onCancel }) => {
       <div className="anim" style={{ position:"relative", background:"var(--surface)", borderRadius:20, padding:"32px 36px", width:"100%", maxWidth:380, boxShadow:"0 16px 60px rgba(0,0,0,.16)", textAlign:"center" }}>
         <div style={{ fontSize:36, marginBottom:12 }}>🗑️</div>
         <h3 style={{ fontFamily:"'Cormorant Garamond', serif", fontSize:22, fontWeight:600, marginBottom:8 }}>Confirmer la suppression</h3>
-        <p style={{ fontSize:14, color:C.muted, marginBottom:24, lineHeight:1.6 }}>{message}</p>
+        <p style={{ fontSize:14, color:"var(--muted-c)", marginBottom:24, lineHeight:1.6 }}>{message}</p>
         <div style={{ display:"flex", gap:10, justifyContent:"center" }}>
           <Btn variant="ghost" onClick={onCancel}>Annuler</Btn>
           <Btn variant="danger" onClick={onConfirm}>Supprimer</Btn>
@@ -214,8 +216,8 @@ const ConfirmDialog = ({ open, message, onConfirm, onCancel }) => {
 const Empty = ({ icon, title, sub, action }) => (
   <div style={{ textAlign:"center", padding:"64px 40px" }}>
     <div style={{ fontSize:44, marginBottom:16, opacity:.35 }}>{icon}</div>
-    <div style={{ fontFamily:"'Cormorant Garamond', serif", fontSize:22, fontWeight:600, color:C.text, marginBottom:6 }}>{title}</div>
-    <div style={{ fontSize:13, color:C.muted, marginBottom:26 }}>{sub}</div>
+    <div style={{ fontFamily:"'Cormorant Garamond', serif", fontSize:22, fontWeight:600, color:"var(--text-c)", marginBottom:6 }}>{title}</div>
+    <div style={{ fontSize:13, color:"var(--muted-c)", marginBottom:26 }}>{sub}</div>
     {action}
   </div>
 );
@@ -228,7 +230,7 @@ const CustomTooltip = ({ active, payload, label }) => {
       {payload.map((p,i) => (
         <div key={i} style={{ display:"flex", gap:10, alignItems:"center" }}>
           <div style={{ width:8, height:8, borderRadius:2, background:p.fill||p.color, flexShrink:0 }} />
-          <span style={{ color:C.muted }}>{p.name}</span>
+          <span style={{ color:"var(--muted-c)" }}>{p.name}</span>
           <span style={{ fontWeight:600 }}>{(p.value||0).toLocaleString("fr-FR")} €</span>
         </div>
       ))}
@@ -256,18 +258,18 @@ const Onboarding = ({ onClose, onGoParams, onLoadData }) => (
   <div style={{ position:"fixed", inset:0, zIndex:700, display:"flex", alignItems:"center", justifyContent:"center", padding:20, background:"rgba(42,33,24,.55)", backdropFilter:"blur(8px)" }}>
     <div className="anim" style={{ background:"var(--surface)", borderRadius:28, padding:"52px 56px", width:"100%", maxWidth:560, boxShadow:"0 32px 100px rgba(0,0,0,.2)", textAlign:"center" }}>
       <div style={{ fontFamily:"'Cormorant Garamond', serif", fontSize:64, fontWeight:600, color:C.coral, lineHeight:1, marginBottom:8 }}>Clo'</div>
-      <div style={{ fontSize:13, color:C.muted, letterSpacing:".1em", textTransform:"uppercase", marginBottom:32 }}>Votre tableau de bord freelance</div>
+      <div style={{ fontSize:13, color:"var(--muted-c)", letterSpacing:".1em", textTransform:"uppercase", marginBottom:32 }}>Votre tableau de bord freelance</div>
       <div style={{ display:"flex", flexDirection:"column", gap:16, marginBottom:36, textAlign:"left" }}>
         {[
           ["⚙️", "Configurez votre activité", "Définissez votre métier, votre objectif mensuel et vos types de prestations dans Paramètres."],
           ["📷", "Ajoutez vos prestations", "Saisissez chaque prestation réalisée pour suivre votre CA en temps réel."],
           ["💾", "Sauvegardez régulièrement", "Téléchargez votre fichier de données avant de quitter — il se recharge en un clic."],
         ].map(([icon, title, desc]) => (
-          <div key={title} style={{ display:"flex", gap:16, alignItems:"flex-start", background:C.sand, borderRadius:16, padding:"16px 20px" }}>
+          <div key={title} style={{ display:"flex", gap:16, alignItems:"flex-start", background:"var(--surface-2)", borderRadius:16, padding:"16px 20px" }}>
             <span style={{ fontSize:24, flexShrink:0 }}>{icon}</span>
             <div>
               <div style={{ fontWeight:600, marginBottom:3 }}>{title}</div>
-              <div style={{ fontSize:13, color:C.muted, lineHeight:1.5 }}>{desc}</div>
+              <div style={{ fontSize:13, color:"var(--muted-c)", lineHeight:1.5 }}>{desc}</div>
             </div>
           </div>
         ))}
@@ -305,29 +307,29 @@ const Dashboard=({prestations,frais,settings,onNewPrestation,year})=>{
     <ProgressBar label="Salaire net mensuel moyen" value={netMoyenMensuel} objectif={objectif} sub="Moyenne sur les mois avec au moins une prestation"/>
     {objectifAnnuel>0&&(<div style={{background:"var(--surface)",borderRadius:16,border:"1px solid var(--border-c)",padding:"18px 22px",marginBottom:20}}>
       <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:12}}>
-        <div><h3 style={{fontFamily:"'Cormorant Garamond', serif",fontSize:18,fontWeight:600,marginBottom:3}}>Progression vers l'objectif annuel</h3><div style={{fontSize:12,color:C.muted}}>Objectif : {objectifAnnuel.toLocaleString("fr-FR")} € · Bénéfice : <strong style={{color:benefice>=0?C.green:C.red}}>{benefice.toLocaleString("fr-FR",{maximumFractionDigits:0})} €</strong></div></div>
-        <div style={{textAlign:"right",flexShrink:0,marginLeft:20}}><div style={{fontFamily:"'Cormorant Garamond', serif",fontSize:26,fontWeight:600,color:pctAnnuel>=100?C.green:pctAnnuel>=60?C.yellow:C.red,lineHeight:1}}>{Math.round(pctAnnuel)}%</div><div style={{fontSize:11,color:C.muted,marginTop:2}}>atteint</div></div>
+        <div><h3 style={{fontFamily:"'Cormorant Garamond', serif",fontSize:18,fontWeight:600,marginBottom:3}}>Progression vers l'objectif annuel</h3><div style={{fontSize:12,color:"var(--muted-c)"}}>Objectif : {objectifAnnuel.toLocaleString("fr-FR")} € · Bénéfice : <strong style={{color:benefice>=0?C.green:C.red}}>{benefice.toLocaleString("fr-FR",{maximumFractionDigits:0})} €</strong></div></div>
+        <div style={{textAlign:"right",flexShrink:0,marginLeft:20}}><div style={{fontFamily:"'Cormorant Garamond', serif",fontSize:26,fontWeight:600,color:pctAnnuel>=100?C.green:pctAnnuel>=60?C.yellow:C.red,lineHeight:1}}>{Math.round(pctAnnuel)}%</div><div style={{fontSize:11,color:"var(--muted-c)",marginTop:2}}>atteint</div></div>
       </div>
-      <div style={{background:C.sand,borderRadius:99,height:10,marginBottom:10}}><div style={{background:pctAnnuel>=100?C.green:pctAnnuel>=60?C.yellow:C.red,width:`${Math.min(100,Math.max(0,pctAnnuel))}%`,height:"100%",borderRadius:99,transition:"width 1.2s ease"}}/></div>
-      <div style={{display:"flex",justifyContent:"space-between",fontSize:12,color:C.muted}}><span>{benefice<objectifAnnuel&&benefice>=0?`Il manque ${(objectifAnnuel-benefice).toLocaleString("fr-FR",{maximumFractionDigits:0})} €`:benefice<0?"Bénéfice négatif":"🎉 Objectif atteint !"}</span>{projAnnuelle>0&&<span>Projection : {Math.round(projAnnuelle).toLocaleString("fr-FR")} € sur l'année</span>}</div>
+      <div style={{background:"var(--surface-2)",borderRadius:99,height:10,marginBottom:10}}><div style={{background:pctAnnuel>=100?C.green:pctAnnuel>=60?C.yellow:C.red,width:`${Math.min(100,Math.max(0,pctAnnuel))}%`,height:"100%",borderRadius:99,transition:"width 1.2s ease"}}/></div>
+      <div style={{display:"flex",justifyContent:"space-between",fontSize:12,color:"var(--muted-c)"}}><span>{benefice<objectifAnnuel&&benefice>=0?`Il manque ${(objectifAnnuel-benefice).toLocaleString("fr-FR",{maximumFractionDigits:0})} €`:benefice<0?"Bénéfice négatif":"🎉 Objectif atteint !"}</span>{projAnnuelle>0&&<span>Projection : {Math.round(projAnnuelle).toLocaleString("fr-FR")} € sur l'année</span>}</div>
     </div>)}
     <div style={{display:"grid",gridTemplateColumns:"2fr 1fr",gap:20,marginBottom:20}}>
       <Card>
-        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:22}}><h3 style={{fontFamily:"'Cormorant Garamond', serif",fontSize:19,fontWeight:600}}>CA mensuel</h3><div style={{display:"flex",gap:6}}>{[["year","Année entière"],["ytd","À ce jour"]].map(([r,l])=>(<button key={r} onClick={()=>setRange(r)} style={{padding:"5px 13px",borderRadius:8,border:"none",fontSize:12,fontFamily:"'DM Sans', sans-serif",fontWeight:500,background:range===r?C.coral:C.sand,color:range===r?"white":C.muted}}>{l}</button>))}</div></div>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:22}}><h3 style={{fontFamily:"'Cormorant Garamond', serif",fontSize:19,fontWeight:600}}>CA mensuel</h3><div style={{display:"flex",gap:6}}>{[["year","Année entière"],["ytd","À ce jour"]].map(([r,l])=>(<button key={r} onClick={()=>setRange(r)} style={{padding:"5px 13px",borderRadius:8,border:"none",fontSize:12,fontFamily:"'DM Sans', sans-serif",fontWeight:500,background:range===r?C.coral:"var(--surface-2)",color:range===r?"white":"var(--muted-c)"}}>{l}</button>))}</div></div>
         <ResponsiveContainer width="100%" height={220}><BarChart data={chartData} barGap={3} barCategoryGap="35%"><CartesianGrid strokeDasharray="3 3" stroke={C.border} vertical={false}/><XAxis dataKey="mois" tick={{fontSize:12,fill:C.muted}} axisLine={false} tickLine={false}/><YAxis tick={{fontSize:12,fill:C.muted}} axisLine={false} tickLine={false} width={50} tickFormatter={v=>v?`${(v/1000).toFixed(0)}k`:"0"}/><Tooltip content={<CustomTooltip/>} cursor={{fill:C.coralPale,radius:8}}/><Bar dataKey="CA" radius={[6,6,0,0]} name="CA Brut">{chartData.map((e,i)=><Cell key={i} fill={e.idx===currentMonth?C.coralDeep:C.coral}/>)}</Bar><Bar dataKey="Net" fill={C.sage} radius={[6,6,0,0]} name="CA Net"/><Bar dataKey="Frais" fill={C.yellow} radius={[6,6,0,0]} name="Frais"/></BarChart></ResponsiveContainer>
       </Card>
       <Card>
         <h3 style={{fontFamily:"'Cormorant Garamond', serif",fontSize:19,fontWeight:600,marginBottom:22}}>Types de prestations</h3>
-        <div style={{display:"flex",flexDirection:"column",gap:14}}>{byType.length===0?<div style={{color:C.muted,fontSize:13}}>—</div>:byType.map(([type,count])=>{const p=Math.round((count/pYear.length)*100);return(<div key={type}><div style={{display:"flex",justifyContent:"space-between",fontSize:13,marginBottom:5}}><span style={{fontWeight:500,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",maxWidth:"68%"}}>{type}</span><span style={{color:C.muted,flexShrink:0}}>{count} · {p}%</span></div><div style={{background:C.sand,borderRadius:99,height:6}}><div style={{background:C.coral,width:`${p}%`,height:"100%",borderRadius:99}}/></div></div>);})}</div>
+        <div style={{display:"flex",flexDirection:"column",gap:14}}>{byType.length===0?<div style={{color:"var(--muted-c)",fontSize:13}}>—</div>:byType.map(([type,count])=>{const p=Math.round((count/pYear.length)*100);return(<div key={type}><div style={{display:"flex",justifyContent:"space-between",fontSize:13,marginBottom:5}}><span style={{fontWeight:500,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",maxWidth:"68%"}}>{type}</span><span style={{color:"var(--muted-c)",flexShrink:0}}>{count} · {p}%</span></div><div style={{background:"var(--surface-2)",borderRadius:99,height:6}}><div style={{background:C.coral,width:`${p}%`,height:"100%",borderRadius:99}}/></div></div>);})}</div>
       </Card>
     </div>
     <Card style={{marginBottom:20}}>
-      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:18}}><h3 style={{fontFamily:"'Cormorant Garamond', serif",fontSize:19,fontWeight:600}}>Évolution du bénéfice mensuel</h3><div style={{fontSize:12,color:C.muted}}>Net après charges et frais</div></div>
-      <ResponsiveContainer width="100%" height={150}><LineChart data={chartData} margin={{top:8,right:8,bottom:0,left:0}}><CartesianGrid strokeDasharray="3 3" stroke={C.border} vertical={false}/><XAxis dataKey="mois" tick={{fontSize:12,fill:C.muted}} axisLine={false} tickLine={false}/><YAxis tick={{fontSize:11,fill:C.muted}} axisLine={false} tickLine={false} width={48} tickFormatter={v=>`${(v/1000).toFixed(0)}k`}/><Tooltip formatter={(v,n)=>[`${v.toLocaleString("fr-FR")} €`,n]} contentStyle={{borderRadius:12,border:`1px solid ${C.border}`,fontSize:13}}/><ReferenceLine y={0} stroke={C.muted} strokeDasharray="4 4"/><Line type="monotone" dataKey="Bénéfice" name="Bénéfice net" strokeWidth={2.5} stroke={C.sage} dot={(props)=>{const{cx,cy,payload}=props;return<circle key={`d-${cx}-${cy}`} cx={cx} cy={cy} r={4} fill={payload.Bénéfice>=0?C.sage:C.red} stroke={C.white} strokeWidth={2}/>;}} /></LineChart></ResponsiveContainer>
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:18}}><h3 style={{fontFamily:"'Cormorant Garamond', serif",fontSize:19,fontWeight:600}}>Évolution du bénéfice mensuel</h3><div style={{fontSize:12,color:"var(--muted-c)"}}>Net après charges et frais</div></div>
+      <ResponsiveContainer width="100%" height={150}><LineChart data={chartData} margin={{top:8,right:8,bottom:0,left:0}}><CartesianGrid strokeDasharray="3 3" stroke={C.border} vertical={false}/><XAxis dataKey="mois" tick={{fontSize:12,fill:C.muted}} axisLine={false} tickLine={false}/><YAxis tick={{fontSize:11,fill:C.muted}} axisLine={false} tickLine={false} width={48} tickFormatter={v=>`${(v/1000).toFixed(0)}k`}/><Tooltip formatter={(v,n)=>[`${v.toLocaleString("fr-FR")} €`,n]} contentStyle={{borderRadius:12,border:"1px solid var(--border-c)",fontSize:13}}/><ReferenceLine y={0} stroke={C.muted} strokeDasharray="4 4"/><Line type="monotone" dataKey="Bénéfice" name="Bénéfice net" strokeWidth={2.5} stroke={C.sage} dot={(props)=>{const{cx,cy,payload}=props;return<circle key={`d-${cx}-${cy}`} cx={cx} cy={cy} r={4} fill={payload.Bénéfice>=0?C.sage:C.red} stroke={C.white} strokeWidth={2}/>;}} /></LineChart></ResponsiveContainer>
     </Card>
     <Card noPad>
-      <div style={{padding:"18px 24px",borderBottom:`1px solid ${C.border}`,display:"flex",justifyContent:"space-between",alignItems:"center"}}><h3 style={{fontFamily:"'Cormorant Garamond', serif",fontSize:19,fontWeight:600}}>Prestations récentes</h3><span style={{fontSize:12,color:C.muted}}>{pYear.length} au total</span></div>
-      <table><thead><tr><th>Date</th><th>Client</th><th>Prestation</th><th>Tarif</th><th>Statut</th></tr></thead><tbody>{[...pYear].sort((a,b)=>new Date(b.date)-new Date(a.date)).slice(0,6).map(s=>(<tr key={s.id}><td style={{color:C.muted,fontSize:13}}>{s.date}</td><td style={{fontWeight:500}}>{s.nom}</td><td><span className="badge badge-sage">{s.type}</span></td><td style={{fontWeight:700,color:C.coral,whiteSpace:"nowrap"}}>{s.tarif.toLocaleString("fr-FR")} €</td><td><span className={`badge ${s.declare==="Oui"?"badge-green":"badge-yellow"}`}>{s.declare==="Oui"?"✓ Déclaré":"⏳ En attente"}</span></td></tr>))}</tbody></table>
+      <div style={{padding:"18px 24px",borderBottom:"1px solid var(--border-c)",display:"flex",justifyContent:"space-between",alignItems:"center"}}><h3 style={{fontFamily:"'Cormorant Garamond', serif",fontSize:19,fontWeight:600}}>Prestations récentes</h3><span style={{fontSize:12,color:"var(--muted-c)"}}>{pYear.length} au total</span></div>
+      <table><thead><tr><th>Date</th><th>Client</th><th>Prestation</th><th>Tarif</th><th>Statut</th></tr></thead><tbody>{[...pYear].sort((a,b)=>new Date(b.date)-new Date(a.date)).slice(0,6).map(s=>(<tr key={s.id}><td style={{color:"var(--muted-c)",fontSize:13}}>{s.date}</td><td style={{fontWeight:500}}>{s.nom}</td><td><span className="badge badge-sage">{s.type}</span></td><td style={{fontWeight:700,color:C.coral,whiteSpace:"nowrap"}}>{s.tarif.toLocaleString("fr-FR")} €</td><td><span className={`badge ${s.declare==="Oui"?"badge-green":"badge-yellow"}`}>{s.declare==="Oui"?"✓ Déclaré":"⏳ En attente"}</span></td></tr>))}</tbody></table>
     </Card>
     <RegionBlocks prestations={pYear}/>
   </div>);
@@ -416,7 +418,7 @@ const Prestations = ({ prestations, setPrestations, settings, triggerNew, setTri
             {uniqueTypes.map(t=><option key={t}>{t}</option>)}
           </select>
         )}
-        <button onClick={()=>setSortDir(d=>d==="desc"?"asc":"desc")} style={{ background:C.sand, border:"none", borderRadius:12, padding:"10px 16px", fontSize:13, color:C.muted, fontFamily:"'DM Sans', sans-serif" }}>
+        <button onClick={()=>setSortDir(d=>d==="desc"?"asc":"desc")} style={{ background:"var(--surface-2)", border:"none", borderRadius:12, padding:"10px 16px", fontSize:13, color:"var(--muted-c)", fontFamily:"'DM Sans', sans-serif" }}>
           {sortDir==="desc"?"↓ Plus récent":"↑ Plus ancien"}
         </button>
       </div>
@@ -428,16 +430,16 @@ const Prestations = ({ prestations, setPrestations, settings, triggerNew, setTri
           <table>
             <thead><tr><th>Date</th><th>Client</th><th>Prestation</th><th>Tarif</th><th>Paiement</th><th>Déclaré</th><th>Région</th><th style={{width:72}}></th></tr></thead>
             <tbody>
-              {displayed.length===0 && <tr><td colSpan={8} style={{ textAlign:"center", color:C.muted, padding:40 }}>Aucun résultat</td></tr>}
+              {displayed.length===0 && <tr><td colSpan={8} style={{ textAlign:"center", color:"var(--muted-c)", padding:40 }}>Aucun résultat</td></tr>}
               {displayed.map(s => (
                 <tr key={s.id} style={{ cursor:"pointer" }} onClick={()=>openEdit(s)}>
-                  <td style={{ color:C.muted, fontSize:13, whiteSpace:"nowrap" }}>{s.date}</td>
-                  <td><div style={{ fontWeight:500 }}>{s.nom}</div>{s.commentaire&&<div style={{ fontSize:11, color:C.muted, marginTop:2 }}>{s.commentaire}</div>}</td>
+                  <td style={{ color:"var(--muted-c)", fontSize:13, whiteSpace:"nowrap" }}>{s.date}</td>
+                  <td><div style={{ fontWeight:500 }}>{s.nom}</div>{s.commentaire&&<div style={{ fontSize:11, color:"var(--muted-c)", marginTop:2 }}>{s.commentaire}</div>}</td>
                   <td><span className="badge badge-sage">{s.type}</span></td>
                   <td style={{ fontWeight:700, color:C.coral, whiteSpace:"nowrap" }}>{s.tarif.toLocaleString("fr-FR")} €</td>
-                  <td style={{ color:C.muted, fontSize:13 }}>{s.paiement}</td>
+                  <td style={{ color:"var(--muted-c)", fontSize:13 }}>{s.paiement}</td>
                   <td><span className={`badge ${s.declare==="Oui"?"badge-green":"badge-yellow"}`}>{s.declare==="Oui"?"✓ Déclaré":"⏳ Attente"}</span></td>
-                  <td style={{ color:C.muted, fontSize:13 }}>{s.region}</td>
+                  <td style={{ color:"var(--muted-c)", fontSize:13 }}>{s.region}</td>
                   <td onClick={e=>{e.stopPropagation();confirmDel(s.id);}}>
                     <Btn variant="danger" size="sm">✕</Btn>
                   </td>
@@ -451,7 +453,7 @@ const Prestations = ({ prestations, setPrestations, settings, triggerNew, setTri
       <Modal open={modal} onClose={()=>setModal(false)} title={editId?"Modifier la prestation":"Nouvelle prestation"} subtitle="Remplissez les informations de la prestation">
         <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:16 }}>
           <Field label="Date"><input type="date" value={form.date} onChange={e=>upd("date",e.target.value)} /></Field>
-          <Field label="Mois (automatique)"><input value={form.mois} readOnly style={{ background:C.sand, color:C.muted }} /></Field>
+          <Field label="Mois (automatique)"><input value={form.mois} readOnly style={{ background:"var(--surface-2)", color:"var(--muted-c)" }} /></Field>
           <Field label="Nom du client"><input placeholder="Prénom Nom" value={form.nom} onChange={e=>upd("nom",e.target.value)} /></Field>
           <Field label="Type de prestation">
             <select value={form.type} onChange={e=>upd("type",e.target.value)}>
@@ -524,7 +526,7 @@ const Facturier = ({ prestations, factures, setFactures }) => {
           <span style={{ fontSize:20 }}>⚠️</span>
           <div>
             <span style={{ fontWeight:600, color:C.yellow }}>{relanceCount} facture{relanceCount>1?"s":""} en attente depuis plus de 30 jours</span>
-            <span style={{ fontSize:13, color:C.muted, marginLeft:8 }}>Ces lignes sont surlignées dans le tableau — pensez à relancer vos clients.</span>
+            <span style={{ fontSize:13, color:"var(--muted-c)", marginLeft:8 }}>Ces lignes sont surlignées dans le tableau — pensez à relancer vos clients.</span>
           </div>
         </div>
       )}
@@ -552,12 +554,12 @@ const Facturier = ({ prestations, factures, setFactures }) => {
                 const relance = isRelance(p);
                 return (
                   <tr key={p.id} style={ relance ? { background:C.yellowPale } : {} }>
-                    <td style={{ color:C.muted, fontSize:13, whiteSpace:"nowrap" }}>
+                    <td style={{ color:"var(--muted-c)", fontSize:13, whiteSpace:"nowrap" }}>
                       {p.date}
                       {relance && <span className="badge badge-yellow" style={{ marginLeft:8, fontSize:10 }}>Relance</span>}
                     </td>
-                    <td style={{ fontWeight:500, color:C.muted }}>{p.nom}</td>
-                    <td style={{ fontWeight:700, color:C.muted, whiteSpace:"nowrap" }}>{p.tarif.toLocaleString("fr-FR")} €</td>
+                    <td style={{ fontWeight:500, color:"var(--muted-c)" }}>{p.nom}</td>
+                    <td style={{ fontWeight:700, color:"var(--muted-c)", whiteSpace:"nowrap" }}>{p.tarif.toLocaleString("fr-FR")} €</td>
                     <td style={{ minWidth:140 }}><input value={f.facture} onChange={e=>upd(p.id,"facture",e.target.value)} placeholder="F-2026-001" style={{ fontSize:13, padding:"7px 10px", borderRadius:8 }} /></td>
                     <td style={{ minWidth:130 }}><input value={f.acompte} onChange={e=>upd(p.id,"acompte",e.target.value)} placeholder="Ex: 150 €" style={{ fontSize:13, padding:"7px 10px", borderRadius:8 }} /></td>
                     <td style={{ minWidth:120 }}>
@@ -660,9 +662,9 @@ const Frais = ({ frais, setFrais }) => {
                 <div key={c.label}>
                   <div style={{ display:"flex", justifyContent:"space-between", fontSize:13, marginBottom:5 }}>
                     <span style={{ fontWeight:500 }}>{c.label}</span>
-                    <span style={{ color:C.muted }}>{c.total.toLocaleString("fr-FR")} € · {pct}%</span>
+                    <span style={{ color:"var(--muted-c)" }}>{c.total.toLocaleString("fr-FR")} € · {pct}%</span>
                   </div>
-                  <div style={{ background:C.sand, borderRadius:99, height:6 }}>
+                  <div style={{ background:"var(--surface-2)", borderRadius:99, height:6 }}>
                     <div style={{ background:C.coral, width:`${pct}%`, height:"100%", borderRadius:99, transition:"width 1s ease" }} />
                   </div>
                 </div>
@@ -681,7 +683,7 @@ const Frais = ({ frais, setFrais }) => {
           <option value="">Toutes les catégories</option>
           {CATEGORIES_FRAIS.map(c=><option key={c.label}>{c.label}</option>)}
         </select>
-        {(filterMois||filterCat) && <span style={{ fontSize:13, color:C.muted, alignSelf:"center" }}>{displayed.length} résultat{displayed.length>1?"s":""} · {totalDisplayed.toLocaleString("fr-FR",{minimumFractionDigits:2})} €</span>}
+        {(filterMois||filterCat) && <span style={{ fontSize:13, color:"var(--muted-c)", alignSelf:"center" }}>{displayed.length} résultat{displayed.length>1?"s":""} · {totalDisplayed.toLocaleString("fr-FR",{minimumFractionDigits:2})} €</span>}
       </div>
 
       {frais.length===0 ? (
@@ -691,15 +693,15 @@ const Frais = ({ frais, setFrais }) => {
           <table>
             <thead><tr><th>Date</th><th>Libellé</th><th>Catégorie</th><th>Montant</th><th>Paiement</th><th>Commentaire</th><th style={{width:72}}></th></tr></thead>
             <tbody>
-              {displayed.length===0 && <tr><td colSpan={7} style={{ textAlign:"center", color:C.muted, padding:40 }}>Aucun résultat</td></tr>}
+              {displayed.length===0 && <tr><td colSpan={7} style={{ textAlign:"center", color:"var(--muted-c)", padding:40 }}>Aucun résultat</td></tr>}
               {displayed.map(f => (
                 <tr key={f.id} style={{ cursor:"pointer" }} onClick={()=>openEdit(f)}>
-                  <td style={{ color:C.muted, fontSize:13, whiteSpace:"nowrap" }}>{f.date}</td>
+                  <td style={{ color:"var(--muted-c)", fontSize:13, whiteSpace:"nowrap" }}>{f.date}</td>
                   <td style={{ fontWeight:500 }}>{f.libelle}</td>
                   <td><span className="badge badge-sage">{f.categorie}</span></td>
                   <td style={{ fontWeight:700, color:C.red, whiteSpace:"nowrap" }}>−{parseFloat(f.montant||0).toLocaleString("fr-FR")} €</td>
-                  <td style={{ color:C.muted, fontSize:13 }}>{f.paiement}</td>
-                  <td style={{ color:C.muted, fontSize:12, maxWidth:160, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{f.commentaire}</td>
+                  <td style={{ color:"var(--muted-c)", fontSize:13 }}>{f.paiement}</td>
+                  <td style={{ color:"var(--muted-c)", fontSize:12, maxWidth:160, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{f.commentaire}</td>
                   <td onClick={e=>{e.stopPropagation();setConfirmId(f.id);}}><Btn variant="danger" size="sm">✕</Btn></td>
                 </tr>
               ))}
@@ -711,7 +713,7 @@ const Frais = ({ frais, setFrais }) => {
       <Modal open={modal} onClose={()=>setModal(false)} title={editId?"Modifier le frais":"Nouveau frais"} subtitle="Renseignez les informations de la dépense">
         <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:16 }}>
           <Field label="Date"><input type="date" value={form.date} onChange={e=>upd("date",e.target.value)} /></Field>
-          <Field label="Mois (automatique)"><input value={form.mois} readOnly style={{ background:C.sand, color:C.muted }} /></Field>
+          <Field label="Mois (automatique)"><input value={form.mois} readOnly style={{ background:"var(--surface-2)", color:"var(--muted-c)" }} /></Field>
           <Field label="Montant (€)"><input type="number" min={0} step={0.01} value={form.montant} onChange={e=>upd("montant",e.target.value)} placeholder="0" /></Field>
           <Field label="Type de frais">
             <select value={form.categorie} onChange={e=>setForm(prev=>({...prev,categorie:e.target.value,libelle:""}))}>
@@ -767,10 +769,10 @@ const Bilan = ({ prestations, frais, factures, settings, year }) => {
 
   const fraisParCategorie = CATEGORIES_FRAIS.map(c=>({ label:c.label, total:fYear.filter(f=>c.items.includes(f.libelle)).reduce((a,f)=>a+(parseFloat(f.montant)||0),0) })).filter(c=>c.total>0).sort((a,b)=>b.total-a.total);
 
-  const Row = ({ label, value, color=C.text, bold, indent, border }) => (
-    <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"12px 0", borderBottom:border?`1px solid ${C.border}`:undefined, borderTop:border==="top"?`2px solid ${C.border}`:undefined }}>
-      <span style={{ fontSize:14, color:indent?C.muted:C.text, fontWeight:bold?600:400, paddingLeft:indent?16:0 }}>{label}</span>
-      <span style={{ fontFamily:"'Cormorant Garamond', serif", fontSize:bold?22:18, fontWeight:bold?600:400, color }}>{typeof value==="number"?`${value.toLocaleString("fr-FR",{minimumFractionDigits:2})} €`:value}</span>
+  const Row = ({ label, value, color, bold, indent, border }) => (
+    <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"12px 0", borderBottom:border?"1px solid var(--border-c)":undefined, borderTop:border==="top"?"2px solid var(--border-c)":undefined }}>
+      <span style={{ fontSize:14, color:indent?"var(--muted-c)":"var(--text-c)", fontWeight:bold?600:400, paddingLeft:indent?16:0 }}>{label}</span>
+      <span style={{ fontFamily:"'Cormorant Garamond', serif", fontSize:bold?22:18, fontWeight:bold?600:400, color:color||"var(--text-c)" }}>{typeof value==="number"?`${value.toLocaleString("fr-FR",{minimumFractionDigits:2})} €`:value}</span>
     </div>
   );
 
@@ -797,12 +799,12 @@ const Bilan = ({ prestations, frais, factures, settings, year }) => {
           <div style={{ marginTop:8 }}>
             <Row label="🏆 Bénéfice réel net"           value={benefice}          color={benefice>=0?C.green:C.red} bold border="top" />
           </div>
-          <div style={{ marginTop:16, padding:"12px 16px", background:C.sand, borderRadius:12 }}>
-            <div style={{ fontSize:12, color:C.muted, marginBottom:4 }}>Moyenne mensuelle nette</div>
+          <div style={{ marginTop:16, padding:"12px 16px", background:"var(--surface-2)", borderRadius:12 }}>
+            <div style={{ fontSize:12, color:"var(--muted-c)", marginBottom:4 }}>Moyenne mensuelle nette</div>
             <div style={{ fontFamily:"'Cormorant Garamond', serif", fontSize:22, fontWeight:600, color:C.coral }}>
               {moyenneNet.toLocaleString("fr-FR",{maximumFractionDigits:2})} €
             </div>
-            <div style={{ fontSize:11, color:C.muted }}>sur {moisActifs.length} mois actif{moisActifs.length>1?"s":""}</div>
+            <div style={{ fontSize:11, color:"var(--muted-c)" }}>sur {moisActifs.length} mois actif{moisActifs.length>1?"s":""}</div>
           </div>
         </Card>
 
@@ -820,8 +822,8 @@ const Bilan = ({ prestations, frais, factures, settings, year }) => {
             <Card>
               <h3 style={{ fontFamily:"'Cormorant Garamond', serif", fontSize:20, fontWeight:600, marginBottom:20 }}>Frais par catégorie</h3>
               {fraisParCategorie.map(c => (
-                <div key={c.label} style={{ display:"flex", justifyContent:"space-between", padding:"8px 0", borderBottom:`1px solid ${C.border}` }}>
-                  <span style={{ fontSize:13, color:C.muted }}>{c.label}</span>
+                <div key={c.label} style={{ display:"flex", justifyContent:"space-between", padding:"8px 0", borderBottom:"1px solid var(--border-c)" }}>
+                  <span style={{ fontSize:13, color:"var(--muted-c)" }}>{c.label}</span>
                   <span style={{ fontWeight:600, fontSize:14 }}>{c.total.toLocaleString("fr-FR",{minimumFractionDigits:2})} €</span>
                 </div>
               ))}
@@ -832,7 +834,7 @@ const Bilan = ({ prestations, frais, factures, settings, year }) => {
 
       {/* Mensuel detail */}
       <Card noPad>
-        <div style={{ padding:"18px 24px", borderBottom:`1px solid ${C.border}` }}>
+        <div style={{ padding:"18px 24px", borderBottom:"1px solid var(--border-c)" }}>
           <h3 style={{ fontFamily:"'Cormorant Garamond', serif", fontSize:19, fontWeight:600 }}>Détail mensuel {year}</h3>
         </div>
         <table>
@@ -851,7 +853,7 @@ const Bilan = ({ prestations, frais, factures, settings, year }) => {
                   <td style={{ color:C.yellow }}>−{(ca*taux).toLocaleString("fr-FR",{minimumFractionDigits:2})} €</td>
                   <td style={{ color:C.red }}>{fr>0?`−${fr.toLocaleString("fr-FR",{minimumFractionDigits:2})} €`:"—"}</td>
                   <td style={{ fontWeight:700, color:net>=0?C.green:C.red }}>{net.toLocaleString("fr-FR",{minimumFractionDigits:2})} €</td>
-                  <td style={{ color:C.muted }}>{nb} prestation{nb>1?"s":""}</td>
+                  <td style={{ color:"var(--muted-c)" }}>{nb} prestation{nb>1?"s":""}</td>
                 </tr>
               );
             })}
@@ -871,7 +873,7 @@ const RegionBlocks=({prestations})=>{
   const ranked=Object.entries(byRegion).sort((a,b)=>b[1]-a[1]);
   const regionColor=(r)=>{const t=(byRegion[r]||0)/maxCount;return`rgb(${Math.round(245+(217-245)*t)},${Math.round(237+(113-237)*t)},${Math.round(229+(90-229)*t)})`;};
   if(!prestations.length||!Object.keys(byRegion).length)return null;
-  return(<div style={{marginTop:20}}><Card style={{padding:"22px 24px"}}><h3 style={{fontFamily:"'Cormorant Garamond', serif",fontSize:19,fontWeight:600,marginBottom:4}}>Classement par région</h3><p style={{fontSize:12,color:C.muted,marginBottom:18}}>{Object.keys(byRegion).length} région{Object.keys(byRegion).length>1?"s":" représentée"} · {total} prestation{total>1?"s":""}</p><div style={{display:"flex",flexDirection:"column",gap:12}}>{ranked.map(([region,count],i)=>{const pct=Math.round((count/total)*100),barPct=Math.round((count/maxCount)*100);return(<div key={region} onMouseEnter={()=>setHovered(region)} onMouseLeave={()=>setHovered(null)} style={{padding:"6px 10px",borderRadius:10,background:hovered===region?C.coralPale:"transparent",transition:"background .15s"}}><div style={{display:"flex",alignItems:"center",gap:10,marginBottom:6}}><span style={{fontFamily:"'Cormorant Garamond', serif",fontSize:18,fontWeight:600,color:C.muted,width:22,textAlign:"right",flexShrink:0}}>{i+1}</span><span style={{flex:1,fontWeight:500,fontSize:14}}>{region}</span><span style={{fontSize:13,fontWeight:600,color:C.coral,flexShrink:0}}>{count}</span><span style={{fontSize:12,color:C.muted,flexShrink:0,minWidth:32,textAlign:"right"}}>{pct}%</span></div><div style={{marginLeft:32}}><div style={{background:C.sand,borderRadius:99,height:5}}><div style={{background:regionColor(region),width:`${barPct}%`,height:"100%",borderRadius:99}}/></div></div></div>);})}</div></Card></div>);
+  return(<div style={{marginTop:20}}><Card style={{padding:"22px 24px"}}><h3 style={{fontFamily:"'Cormorant Garamond', serif",fontSize:19,fontWeight:600,marginBottom:4}}>Classement par région</h3><p style={{fontSize:12,color:"var(--muted-c)",marginBottom:18}}>{Object.keys(byRegion).length} région{Object.keys(byRegion).length>1?"s":" représentée"} · {total} prestation{total>1?"s":""}</p><div style={{display:"flex",flexDirection:"column",gap:12}}>{ranked.map(([region,count],i)=>{const pct=Math.round((count/total)*100),barPct=Math.round((count/maxCount)*100);return(<div key={region} onMouseEnter={()=>setHovered(region)} onMouseLeave={()=>setHovered(null)} style={{padding:"6px 10px",borderRadius:10,background:hovered===region?C.coralPale:"transparent",transition:"background .15s"}}><div style={{display:"flex",alignItems:"center",gap:10,marginBottom:6}}><span style={{fontFamily:"'Cormorant Garamond', serif",fontSize:18,fontWeight:600,color:"var(--muted-c)",width:22,textAlign:"right",flexShrink:0}}>{i+1}</span><span style={{flex:1,fontWeight:500,fontSize:14}}>{region}</span><span style={{fontSize:13,fontWeight:600,color:C.coral,flexShrink:0}}>{count}</span><span style={{fontSize:12,color:"var(--muted-c)",flexShrink:0,minWidth:32,textAlign:"right"}}>{pct}%</span></div><div style={{marginLeft:32}}><div style={{background:"var(--surface-2)",borderRadius:99,height:5}}><div style={{background:regionColor(region),width:`${barPct}%`,height:"100%",borderRadius:99}}/></div></div></div>);})}</div></Card></div>);
 };
 
 const Clients=({prestations,factures})=>{
@@ -915,18 +917,18 @@ const Clients=({prestations,factures})=>{
         <thead><tr><th>Client</th><th>Prestations</th><th>CA Total</th><th>Dernière prestation</th><th>Région</th></tr></thead>
         <tbody>{sorted.map(c=>(
           <tr key={c.nom} style={{cursor:"pointer"}} onClick={()=>setSelected(c.nom)}>
-            <td><div style={{fontWeight:600}}>{c.nom}</div>{c.types.length>0&&<div style={{fontSize:11,color:C.muted,marginTop:2}}>{c.types.slice(0,2).join(" · ")}</div>}</td>
-            <td><span style={{fontWeight:600,color:C.coral}}>{c.nb}</span><span style={{fontSize:12,color:C.muted}}> prestation{c.nb>1?"s":""}</span>{c.regle<c.nb&&<div style={{fontSize:11,color:C.yellow,marginTop:2}}>{c.nb-c.regle} en attente</div>}</td>
+            <td><div style={{fontWeight:600}}>{c.nom}</div>{c.types.length>0&&<div style={{fontSize:11,color:"var(--muted-c)",marginTop:2}}>{c.types.slice(0,2).join(" · ")}</div>}</td>
+            <td><span style={{fontWeight:600,color:C.coral}}>{c.nb}</span><span style={{fontSize:12,color:"var(--muted-c)"}}> prestation{c.nb>1?"s":""}</span>{c.regle<c.nb&&<div style={{fontSize:11,color:C.yellow,marginTop:2}}>{c.nb-c.regle} en attente</div>}</td>
             <td style={{fontWeight:700,color:C.coral,whiteSpace:"nowrap"}}>{c.totalCA.toLocaleString("fr-FR")} €</td>
-            <td><div style={{fontSize:13,color:C.muted}}>{c.lastDate}</div>{c.lastType&&<span className="badge badge-sage" style={{marginTop:4,display:"inline-flex"}}>{c.lastType}</span>}</td>
-            <td style={{fontSize:13,color:C.muted}}>{c.topRegion||"—"}</td>
+            <td><div style={{fontSize:13,color:"var(--muted-c)"}}>{c.lastDate}</div>{c.lastType&&<span className="badge badge-sage" style={{marginTop:4,display:"inline-flex"}}>{c.lastType}</span>}</td>
+            <td style={{fontSize:13,color:"var(--muted-c)"}}>{c.topRegion||"—"}</td>
           </tr>
         ))}</tbody>
       </table>
     </Card>
     {sel&&(<Modal open={!!selected} onClose={()=>setSelected(null)} title={sel.nom} subtitle={`${sel.nb} prestation${sel.nb>1?"s":""} · ${sel.totalCA.toLocaleString("fr-FR")} € total`}>
       <table style={{marginBottom:20}}><thead><tr><th>Date</th><th>Type</th><th>Tarif</th><th>Statut</th></tr></thead>
-      <tbody>{sel.prestations.map(p=>(<tr key={p.id}><td style={{color:C.muted,fontSize:13}}>{p.date}</td><td><span className="badge badge-sage">{p.type}</span></td><td style={{fontWeight:700,color:C.coral}}>{p.tarif.toLocaleString("fr-FR")} €</td><td><span className={`badge ${getF(p.id).total==="Réglé"?"badge-green":getF(p.id).total==="Litige"?"badge-red":"badge-yellow"}`}>{getF(p.id).total}</span></td></tr>))}</tbody>
+      <tbody>{sel.prestations.map(p=>(<tr key={p.id}><td style={{color:"var(--muted-c)",fontSize:13}}>{p.date}</td><td><span className="badge badge-sage">{p.type}</span></td><td style={{fontWeight:700,color:C.coral}}>{p.tarif.toLocaleString("fr-FR")} €</td><td><span className={`badge ${getF(p.id).total==="Réglé"?"badge-green":getF(p.id).total==="Litige"?"badge-red":"badge-yellow"}`}>{getF(p.id).total}</span></td></tr>))}</tbody>
       </table>
     </Modal>)}
   </div>);
@@ -945,7 +947,7 @@ const Parametres=({settings,setSettings,darkMode,setDarkMode})=>{
     <Card style={{marginBottom:20}}>
       <h3 style={{fontFamily:"'Cormorant Garamond', serif",fontSize:20,fontWeight:600,marginBottom:20}}>Affichage</h3>
       <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-        <div><div style={{fontWeight:500,marginBottom:3}}>Mode sombre</div><div style={{fontSize:13,color:C.muted}}>Interface en couleurs sombres</div></div>
+        <div><div style={{fontWeight:500,marginBottom:3}}>Mode sombre</div><div style={{fontSize:13,color:"var(--muted-c)"}}>Interface en couleurs sombres</div></div>
         <button onClick={()=>setDarkMode(p=>!p)} style={{width:52,height:28,borderRadius:99,border:"none",cursor:"pointer",background:darkMode?C.coral:C.border,position:"relative",transition:"background .25s",flexShrink:0,marginLeft:20}}>
           <div style={{width:22,height:22,borderRadius:"50%",background:"#fff",position:"absolute",top:3,left:darkMode?27:3,transition:"left .25s",boxShadow:"0 1px 4px rgba(0,0,0,.2)"}}/>
         </button>
@@ -964,18 +966,18 @@ const Parametres=({settings,setSettings,darkMode,setDarkMode})=>{
         <div style={{display:"flex",flexDirection:"column",gap:16}}>
           <Field label="Objectif net mensuel (€)"><input type="number" value={settings.objectifMensuel} onChange={e=>upd("objectifMensuel",parseFloat(e.target.value)||0)}/></Field>
           <Field label="Taux de charges / URSSAF (%)"><input type="number" step={0.1} value={settings.tauxCharges} onChange={e=>upd("tauxCharges",parseFloat(e.target.value)||0)}/></Field>
-          <div style={{background:C.sand,borderRadius:14,padding:"14px 18px"}}>
-            <div style={{fontSize:11,color:C.muted,fontWeight:600,textTransform:"uppercase",letterSpacing:".07em",marginBottom:10}}>Calcul automatique</div>
-            {[["CA brut / mois",`${brut.toLocaleString("fr-FR",{maximumFractionDigits:2})} €`],["CA brut / an",`${(brut*12).toLocaleString("fr-FR",{maximumFractionDigits:2})} €`]].map(([l,v])=>(<div key={l} style={{display:"flex",justifyContent:"space-between",padding:"7px 0",borderBottom:`1px solid ${C.border}`}}><span style={{fontSize:13,color:C.muted}}>{l}</span><span style={{fontWeight:600,color:C.coral}}>{v}</span></div>))}
+          <div style={{background:"var(--surface-2)",borderRadius:14,padding:"14px 18px"}}>
+            <div style={{fontSize:11,color:"var(--muted-c)",fontWeight:600,textTransform:"uppercase",letterSpacing:".07em",marginBottom:10}}>Calcul automatique</div>
+            {[["CA brut / mois",`${brut.toLocaleString("fr-FR",{maximumFractionDigits:2})} €`],["CA brut / an",`${(brut*12).toLocaleString("fr-FR",{maximumFractionDigits:2})} €`]].map(([l,v])=>(<div key={l} style={{display:"flex",justifyContent:"space-between",padding:"7px 0",borderBottom:"1px solid var(--border-c)"}}><span style={{fontSize:13,color:"var(--muted-c)"}}>{l}</span><span style={{fontWeight:600,color:C.coral}}>{v}</span></div>))}
           </div>
         </div>
       </Card>
     </div>
     <Card>
       <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:8}}><h3 style={{fontFamily:"'Cormorant Garamond', serif",fontSize:20,fontWeight:600}}>Types de prestations</h3><Btn variant="soft" size="sm" onClick={addType}>＋ Ajouter</Btn></div>
-      <p style={{fontSize:13,color:C.muted,marginBottom:20}}>Le tarif se pré-remplit lors de la saisie d'une prestation.</p>
+      <p style={{fontSize:13,color:"var(--muted-c)",marginBottom:20}}>Le tarif se pré-remplit lors de la saisie d'une prestation.</p>
       <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill, minmax(290px,1fr))",gap:10}}>
-        {settings.typesPrestation.map((t,i)=>(<div key={i} style={{display:"grid",gridTemplateColumns:"1fr auto auto",gap:8,alignItems:"center",background:C.sand,borderRadius:12,padding:"10px 12px"}}><input value={t.nom} onChange={e=>updType(i,"nom",e.target.value)} placeholder="Nom de la prestation" style={{background:C.white,fontSize:13}}/><div style={{display:"flex",alignItems:"center",gap:6,background:C.white,borderRadius:10,padding:"8px 10px",border:`1.5px solid ${C.border}`}}><input type="number" min={0} value={t.tarif} onChange={e=>updType(i,"tarif",e.target.value)} placeholder="0" style={{border:"none",padding:0,width:70,fontSize:13,fontWeight:600}}/><span style={{fontSize:12,color:C.muted}}>€</span></div><button onClick={()=>delType(i)} style={{background:"none",border:"none",color:C.muted,fontSize:20,lineHeight:1,padding:"2px 6px"}}>×</button></div>))}
+        {settings.typesPrestation.map((t,i)=>(<div key={i} style={{display:"grid",gridTemplateColumns:"1fr auto auto",gap:8,alignItems:"center",background:"var(--surface-2)",borderRadius:12,padding:"10px 12px"}}><input value={t.nom} onChange={e=>updType(i,"nom",e.target.value)} placeholder="Nom de la prestation" style={{background:"var(--surface)",fontSize:13}}/><div style={{display:"flex",alignItems:"center",gap:6,background:"var(--surface)",borderRadius:10,padding:"8px 10px",border:"1.5px solid var(--border-c)"}}><input type="number" min={0} value={t.tarif} onChange={e=>updType(i,"tarif",e.target.value)} placeholder="0" style={{border:"none",padding:0,width:70,fontSize:13,fontWeight:600}}/><span style={{fontSize:12,color:"var(--muted-c)"}}>€</span></div><button onClick={()=>delType(i)} style={{background:"none",border:"none",color:"var(--muted-c)",fontSize:20,lineHeight:1,padding:"2px 6px"}}>×</button></div>))}
       </div>
     </Card>
   </div>);
@@ -1045,8 +1047,6 @@ export default function App() {
   const totalNet = totalCA * (1 - settings.tauxCharges/100);
   const totalFraisYear = frais.filter(f=>f.date?.startsWith(String(year))).reduce((a,f)=>a+(parseFloat(f.montant)||0),0);
   const relanceCount = useMemo(()=>{const today=new Date();return prestations.filter(p=>{const f=factures[p.id]||{};if(f.total!=="Attente")return false;const d=new Date(p.date);return!isNaN(d)&&(today-d)/(1000*60*60*24)>30;}).length;},[prestations,factures]);
-  const bg=darkMode?"#1A1510":C.bg,wh=darkMode?"#231E18":C.white,sn=darkMode?"#2C261E":C.sand,tx=darkMode?"#F2EAE0":C.text,mu=darkMode?"#857870":C.muted,br=darkMode?"#3C342A":C.border;
-
   // Dark mode — apply class on :root so CSS vars cascade to fixed-positioned elements
   useEffect(() => { document.documentElement.classList.toggle("dark", darkMode); }, [darkMode]);
 
@@ -1095,14 +1095,14 @@ export default function App() {
       {showOnboarding && prestations.length===0 && (
         <Onboarding onClose={()=>setShowOnboarding(false)} onGoParams={()=>setView("params")} onLoadData={()=>setDataModal(true)} />
       )}
-      <div style={{ display:"flex", minHeight:"100vh", background:bg, color:tx }}>
+      <div style={{ display:"flex", minHeight:"100vh", background:"var(--bg)", color:"var(--text-c)" }}>
 
         {/* ── Sidebar ── */}
-        <aside style={{ width:224, background:wh, borderRight:`1px solid ${br}`, display:"flex", flexDirection:"column", position:"sticky", top:0, height:"100vh", flexShrink:0 }}>
+        <aside style={{ width:224, background:"var(--surface)", borderRight:"1px solid var(--border-c)", display:"flex", flexDirection:"column", position:"sticky", top:0, height:"100vh", flexShrink:0 }}>
           {/* Brand */}
-          <div style={{ padding:"28px 24px 20px", borderBottom:`1px solid ${br}` }}>
+          <div style={{ padding:"28px 24px 20px", borderBottom:"1px solid var(--border-c)" }}>
             <div style={{ fontFamily:"'Cormorant Garamond', serif", fontSize:42, fontWeight:600, color:C.coral, lineHeight:1, letterSpacing:"-0.03em" }}>Clo'</div>
-            <div style={{ fontSize:11, color:mu, marginTop:6, letterSpacing:".09em", textTransform:"uppercase" }}>{settings.metier}</div>
+            <div style={{ fontSize:11, color:"var(--muted-c)", marginTop:6, letterSpacing:".09em", textTransform:"uppercase" }}>{settings.metier}</div>
           </div>
 
           {/* Global search */}
@@ -1115,7 +1115,7 @@ export default function App() {
                 style={{ fontSize:13, padding:"8px 12px", borderRadius:10 }}
               />
               {globalSearch && (
-                <button onClick={()=>setGlobalSearch("")} style={{ position:"absolute", right:10, top:"50%", transform:"translateY(-50%)", background:"none", border:"none", color:C.muted, fontSize:16 }}>×</button>
+                <button onClick={()=>setGlobalSearch("")} style={{ position:"absolute", right:10, top:"50%", transform:"translateY(-50%)", background:"none", border:"none", color:"var(--muted-c)", fontSize:16 }}>×</button>
               )}
             </div>
             {searchResults && (
@@ -1128,10 +1128,10 @@ export default function App() {
                       <>
                         <div style={{ padding:"8px 14px", fontSize:11, fontWeight:600, color:"var(--muted-c)", textTransform:"uppercase", letterSpacing:".07em", background:"var(--surface-2)" }}>Prestations ({searchResults.prestations.length})</div>
                         {searchResults.prestations.slice(0,4).map(p=>(
-                          <div key={p.id} onClick={()=>{setView("prestations");setGlobalSearch("");}} style={{ padding:"10px 14px", cursor:"pointer", borderBottom:`1px solid ${C.border}` }}
+                          <div key={p.id} onClick={()=>{setView("prestations");setGlobalSearch("");}} style={{ padding:"10px 14px", cursor:"pointer", borderBottom:"1px solid var(--border-c)" }}
                             onMouseEnter={e=>e.currentTarget.style.background=C.coralPale} onMouseLeave={e=>e.currentTarget.style.background=""}>
                             <div style={{ fontWeight:500, fontSize:13 }}>{p.nom}</div>
-                            <div style={{ fontSize:11, color:C.muted }}>{p.date} · {p.tarif.toLocaleString("fr-FR")} €</div>
+                            <div style={{ fontSize:11, color:"var(--muted-c)" }}>{p.date} · {p.tarif.toLocaleString("fr-FR")} €</div>
                           </div>
                         ))}
                       </>
@@ -1140,10 +1140,10 @@ export default function App() {
                       <>
                         <div style={{ padding:"8px 14px", fontSize:11, fontWeight:600, color:"var(--muted-c)", textTransform:"uppercase", letterSpacing:".07em", background:"var(--surface-2)" }}>Frais ({searchResults.frais.length})</div>
                         {searchResults.frais.slice(0,3).map(f=>(
-                          <div key={f.id} onClick={()=>{setView("frais");setGlobalSearch("");}} style={{ padding:"10px 14px", cursor:"pointer", borderBottom:`1px solid ${C.border}` }}
+                          <div key={f.id} onClick={()=>{setView("frais");setGlobalSearch("");}} style={{ padding:"10px 14px", cursor:"pointer", borderBottom:"1px solid var(--border-c)" }}
                             onMouseEnter={e=>e.currentTarget.style.background=C.coralPale} onMouseLeave={e=>e.currentTarget.style.background=""}>
                             <div style={{ fontWeight:500, fontSize:13 }}>{f.libelle}</div>
-                            <div style={{ fontSize:11, color:C.muted }}>{f.date} · {parseFloat(f.montant||0).toLocaleString("fr-FR")} €</div>
+                            <div style={{ fontSize:11, color:"var(--muted-c)" }}>{f.date} · {parseFloat(f.montant||0).toLocaleString("fr-FR")} €</div>
                           </div>
                         ))}
                       </>
@@ -1157,7 +1157,7 @@ export default function App() {
           {/* Year selector */}
           {availableYears.length>1 && (
             <div style={{ padding:"10px 12px 0" }}>
-              <select value={year} onChange={e=>setYear(parseInt(e.target.value))} style={{ fontSize:12, padding:"6px 10px", borderRadius:8, color:C.muted }}>
+              <select value={year} onChange={e=>setYear(parseInt(e.target.value))} style={{ fontSize:12, padding:"6px 10px", borderRadius:8, color:"var(--muted-c)" }}>
                 {availableYears.map(y=><option key={y}>{y}</option>)}
               </select>
             </div>
@@ -1168,7 +1168,7 @@ export default function App() {
             {NAVS.map(n => {
               const active = view===n.id;
               return (
-                <button key={n.id} onClick={()=>setView(n.id)} style={{ display:"flex", alignItems:"center", gap:10, padding:"10px 14px", borderRadius:12, border:"none", width:"100%", textAlign:"left", background:active?C.coralPale:"transparent", color:active?C.coralDeep:mu, fontFamily:"'DM Sans', sans-serif", fontWeight:active?600:400, fontSize:14 }}>
+                <button key={n.id} onClick={()=>setView(n.id)} style={{ display:"flex", alignItems:"center", gap:10, padding:"10px 14px", borderRadius:12, border:"none", width:"100%", textAlign:"left", background:active?C.coralPale:"transparent", color:active?C.coralDeep:"var(--muted-c)", fontFamily:"'DM Sans', sans-serif", fontWeight:active?600:400, fontSize:14 }}>
                   <span style={{ fontSize:14 }}>{n.icon}</span><span style={{ flex:1 }}>{n.label}</span>{n.id==="facturier"&&relanceCount>0&&(<span style={{ background:C.red, color:"white", borderRadius:99, fontSize:10, fontWeight:700, padding:"1px 7px", minWidth:18, textAlign:"center", lineHeight:"18px", display:"inline-block" }}>{relanceCount}</span>)}
                 </button>
               );
@@ -1178,19 +1178,19 @@ export default function App() {
           {/* Summary + save */}
           <div style={{ padding:"0 12px 16px" }}>
             {prestations.length>0 && (
-              <div style={{ background:C.sand, borderRadius:14, padding:"12px 14px", marginBottom:8 }}>
-                <div style={{ fontSize:10, color:C.muted, fontWeight:600, textTransform:"uppercase", letterSpacing:".08em", marginBottom:6 }}>{year}</div>
+              <div style={{ background:"var(--surface-2)", borderRadius:14, padding:"12px 14px", marginBottom:8 }}>
+                <div style={{ fontSize:10, color:"var(--muted-c)", fontWeight:600, textTransform:"uppercase", letterSpacing:".08em", marginBottom:6 }}>{year}</div>
                 <div style={{ fontFamily:"'Cormorant Garamond', serif", fontSize:22, fontWeight:600, color:C.coral, lineHeight:1 }}>{totalCA.toLocaleString("fr-FR",{maximumFractionDigits:0})} €</div>
-                <div style={{ fontSize:11, color:C.muted, marginTop:4 }}>{totalNet.toLocaleString("fr-FR",{maximumFractionDigits:0})} € net</div>
+                <div style={{ fontSize:11, color:"var(--muted-c)", marginTop:4 }}>{totalNet.toLocaleString("fr-FR",{maximumFractionDigits:0})} € net</div>
                 {totalFraisYear>0 && <div style={{ fontSize:11, color:C.red, marginTop:2 }}>−{totalFraisYear.toLocaleString("fr-FR",{maximumFractionDigits:0})} € frais</div>}
-                <div style={{ fontSize:11, color:C.muted, marginTop:2 }}>{prestations.filter(p=>p.date?.startsWith(String(year))).length} prestation{prestations.length>1?"s":""}</div>
+                <div style={{ fontSize:11, color:"var(--muted-c)", marginTop:2 }}>{prestations.filter(p=>p.date?.startsWith(String(year))).length} prestation{prestations.length>1?"s":""}</div>
               </div>
             )}
 
             <button onClick={()=>setDataModal(true)} style={{
               width:"100%", padding:"10px 14px", borderRadius:12, position:"relative",
               border:`1.5px solid ${savedFlash?C.green:hasUnsaved?C.coral:C.border}`,
-              background:savedFlash?C.greenPale:hasUnsaved?C.coralPale:C.white,
+              background:savedFlash?C.greenPale:hasUnsaved?C.coralPale:"var(--surface)",
               color:savedFlash?C.green:hasUnsaved?C.coralDeep:C.muted,
               fontSize:13, fontFamily:"'DM Sans', sans-serif", fontWeight:500,
               display:"flex", alignItems:"center", justifyContent:"center", gap:7, transition:"all .3s",
@@ -1202,7 +1202,7 @@ export default function App() {
             </button>
 
             {!prestations.length && (
-              <button onClick={goNewPrestation} style={{ width:"100%", marginTop:8, padding:"10px 16px", borderRadius:12, border:`1.5px dashed ${C.border}`, background:"transparent", color:C.muted, fontSize:13, fontFamily:"'DM Sans', sans-serif", display:"flex", alignItems:"center", justifyContent:"center", gap:6 }}>
+              <button onClick={goNewPrestation} style={{ width:"100%", marginTop:8, padding:"10px 16px", borderRadius:12, border:`1.5px dashed ${C.border}`, background:"transparent", color:"var(--muted-c)", fontSize:13, fontFamily:"'DM Sans', sans-serif", display:"flex", alignItems:"center", justifyContent:"center", gap:6 }}>
                 ＋ Première prestation
               </button>
             )}
