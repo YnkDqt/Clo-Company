@@ -944,7 +944,7 @@ const Clients=({prestations,factures})=>{
     {sel&&(<Modal open={!!selected} onClose={()=>setSelected(null)} title={sel.nom} subtitle={`${sel.nb} prestation${sel.nb>1?"s":""} · ${sel.totalCA.toLocaleString("fr-FR")} € total`}>
       <table style={{marginBottom:20}}><thead><tr><th>Date</th><th>Type</th><th>Tarif</th><th>Statut</th></tr></thead>
       <tbody>{sel.prestations.map(p=>(<tr key={p.id}><td style={{color:"var(--muted-c)",fontSize:13}}>{p.date}</td><td><span className="badge badge-sage">{p.type}</span></td><td style={{fontWeight:700,color:C.coral}}>{p.tarif.toLocaleString("fr-FR")} €</td><td><span className={`badge ${getF(p.id).total==="Réglé"?"badge-green":getF(p.id).total==="Litige"?"badge-red":"badge-yellow"}`}>{getF(p.id).total}</span></td></tr>))}</tbody>
-      </table></div>
+      </table>
     </Modal>)}
   </div>);
 };
